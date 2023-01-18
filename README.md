@@ -1,6 +1,6 @@
 # GptGUI
 
-Python GUI for windows to access OpenAI Gpt Engine.
+Python GUI for Linux or Windows to access OpenAI Gpt Engine.
 
 Before using this application Python 3.x must be installed.
 
@@ -26,9 +26,10 @@ If you're able to get it installed here are a few things to note.
 ## gptgui.ini file
 
 __gptgui.ini__ is a plain text file.
-Two things can be set in the gptgui.ini file
+Three things can be set in the gptgui.ini file
 - Theme
 - Path and filename for the query-save file
+- Your GPTKEY value (coming soon)
 
 example:  
 __theme=superhero__
@@ -40,3 +41,6 @@ queries when using this application.
 
 example:  
 __path=c:\gptgui\myqueries.txt__  
+__theme=cosmo__  
+__gptkey=...........__
+
