@@ -9,9 +9,50 @@ from ttkbootstrap import *
 from ttkbootstrap.constants import *
 import pyperclip as pyc
 import datetime
-import iniproc
 from tkinter import messagebox
 
+# This is my module to read and return ini file key values
+# Keys are case-sensitive
+def striplist(lst):
+    ''' strip items in a list and return list '''
+    L = [i.strip() for i in lst]
+    return L
+
+def ini_read(inifile, *keys):
+    ''' Open and read text file having "key = value" lines
+        Build a dictionary - use it to build a list of
+        values to return in the order received.
+    '''
+
+    kv = []  # one key/value item from ini file
+
+    kvs = {}  # key/value dictionary built from ini file
+
+    rtv = []  # return values stored here in kargs order
+
+    with open(inifile) as f:
+        for line in f:
+            line = line.strip()
+            if line == "":
+                continue
+            if line.startswith('#'):
+                continue
+            # Build dictionary line by line from ini file
+            kv = line.split('=')
+            kv = striplist(kv)
+            kvs[kv[0]] = kv[1]  # add to dictionary
+
+    # Append requested key values and return list
+    for v in keys:
+        try:
+            rtv.append(kvs[v])
+        except:
+            print("ini - Key Error or not used:", v)
+            rtv.append(0)
+
+    return rtv
+
+# ----------------------------------------------------------------
 
 class Application(Frame):
     ''' main class docstring '''
@@ -97,12 +138,16 @@ class Application(Frame):
     def on_submit(self, e=None):
         ''' Query OpenAI Gpt engine and display response in Text widgit'''
         querytext = self.ventry.get()
-        print(len(querytext))
         if len(querytext) < 4:
             return
         self.save.configure(bootstyle="default") # new - not been saved
-        openai.api_key = os.getenv("GPTKEY")
-        print(querytext)
+        # User can store the GPTKEY in the gptgui.ini file
+        # or set it in env variable GPTKEY
+        if GptKey == 0:
+            openai.api_key = os.getenv("GPTKEY")
+        else:
+            openai.api_key = GptKey
+        # print(querytext)
         response = openai.Completion.create(
         model="text-davinci-003",
         prompt=querytext.strip(),
@@ -176,9 +221,11 @@ def save_location(e=None):
 
 now = datetime.datetime.now()
 
-MyTheme, MyPath = iniproc.read("gptgui.ini",
+MyTheme, MyPath, GptKey = ini_read("gptgui.ini",
                                 'theme',
-                                'path')
+                                'path',
+                                'gptkey')
+#print("gptkey=", GptKey)
 
 root = Window("GptGUI", MyTheme)
 
