@@ -4,15 +4,16 @@ Python GUI for Linux or Windows to access OpenAI Gpt Engine.
 
 Before using this application Python 3.x must be installed.
 
-To install Python go to https://www.python.org/downloads/.
+To install Python go to https://www.python.org/downloads/.  
 Click __Download Python 3.???__ and follow the installation instructions.
 
 You will also have to Sign Up at https://openai.com/api/ and __create
 anAPI Key__.  
 There is no cost to do so.
 
-There are two ways to apply the key to the program.  
-### The first way is to set the GPTKEY as an environment variable.  
+There are two options to apply the key to the program.  
+
+### The first option is to set the GPTKEY as an environment variable.  
 #### For Windows it goes like this:  
 Finally, you will have to edit the Windows _system environment variables_ to add
 the API Key. To do this go to the start menu and begin typing "advanced system settings".
@@ -36,35 +37,32 @@ gptkey=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
 
 Except use your own key. It's the same procedure on any system.  
 
-So its option 1 or 2 whatever you prefer.
+So you have two options to set up the account KEY from Gpt.
 
 ---
 
-## Now install GptGUI.
+## A few more notes
 
 ---
 
-If you're able to get it installed here are a few things to note.
-
-## gptgui.ini file
+### gptgui.ini file
 
 __gptgui.ini__ is a plain text file.
 Three things can be set in the gptgui.ini file
 - Theme
 - Path and filename for the query-save file
-- Your GPTKEY value (required if not using system Env Variable)
+- Your GPTKEY value (required - if not using system Environment Variable)
 
-example:
-__theme=superhero__  
-Possible themes are: solar, superhero, cyborg, and darkly.
+Possible themes are: __solar, superhero, cyborg, and darkly__.
 
-The query-save file is also a plain text file where you can save (append) individual
-queries.
+You should enter a path with a file name that will be the  
+plain text file where you can "Save" individual query responses.  
+Call it anything you like.
 
 example:  
 >__path=c:\gptgui\myqueries.txt__  
 __theme=cyborg__  
-__gptkey=__your.own.gptkey.from.openai...  
+__gptkey=__your.own.gptkey.from.your.own.openai.account...  
 
 _Note: if you've set up the GPTKEY in your system ENV,  
 then do not enter anything on the third line of gptgui.ini._
@@ -83,14 +81,9 @@ The buttons:
 > Save the response area with the query into your querysave file
 that was set up in gptgui.ini.
 - View
-> Brings up the querysave file in the response area for viewing.  
-No editing.
+> Displays the query-save file you set up in gptgui.ini.  
+You cannot edit the file hear.
 - Purge
-> Clears the contens of the querysave file.
+> Clears the contens of the query-save file.
 
-
-
-
-
-
-
+---
