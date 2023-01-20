@@ -132,6 +132,7 @@ class Application(Frame):
                  pady=(5,0), padx=5)
 
         self.query.bind("<Return>", self.on_submit)
+        root.bind("<Control-q>", save_location)
         self.query.focus_set()
 
 
