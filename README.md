@@ -59,9 +59,9 @@ plain text file where you can "Save" individual query responses.
 Call it anything you like.
 
 example:  
->__path=c:\gptgui\myqueries.txt__  
-__theme=cyborg__  
-__gptkey=__your.own.gptkey.from.your.own.openai.account...  
+>path=c:\gptgui\myqueries.txt  
+theme=cyborg  
+gptkey=your.own.gptkey.from.your.own.openai.account...  
 
 _Note: if you've set up the GPTKEY in your system ENV,  
 then do not enter anything on the third line of gptgui.ini._
