@@ -18,6 +18,7 @@ Set a Windows _system environment variable_ to add your OpenAI KEY.
 To do this go to the start menu and begin typing "advanced system settings".
 The System Properties dialog will appear. Next click the "Environment Variables" button.
 Then click "New". Now enter __GPTKEY__ for _variable_ name and then your API Key for _value_.
+
 ![Windows System Properties](images/envvar.png "Environment Variables on Windows System")
 
 #### For Linux (or Mac)
@@ -28,13 +29,14 @@ export GPTKEY="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"
 Don't forget to reboot.
 
 ### The second option is to edit the gptgui.ini file 
+
 The gptgui.ini file is in the gptgui (application's) directory. 
 With notepad (for Windows) or any plain text editor of your choice, 
 open the file and on the third line type:
 
 gptkey=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
 
-Except use your own key. It's the same procedure on any system.  
+using you own key. It's the same procedure on any Linux or Mac system.  
 
 So you have two options to set up the account KEY from Gpt.
 
