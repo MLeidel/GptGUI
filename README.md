@@ -18,8 +18,8 @@ You will also have to Sign Up at https://openai.com/api/ and __create
 anAPI Key__.  
 There is no cost to do so.
 
-### _There are two options to apply your key to the program_.  
-### The first option is to set the GPTKEY as an environment variable.  
+### ==_There are two options to apply your key for the application_==  
+### Option 1: set the GPTKEY as an environment variable  
 #### For Windows:  
 Set a Windows _system environment variable_ to add your OpenAI KEY.  
 To do this go to the start menu and begin typing "advanced system settings".
@@ -36,7 +36,7 @@ export GPTKEY="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"
 
 Don't forget to reboot.
 
-### The second option is to edit the gptgui.ini file 
+### Option 2: edit the gptgui.ini file 
 
 The gptgui.ini file is in the gptgui (application's) directory.  
 With notepad (for Windows) or any plain text editor of your choice, 
