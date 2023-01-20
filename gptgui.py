@@ -7,10 +7,10 @@ import os, sys
 from tkinter.font import Font
 from ttkbootstrap import *
 from ttkbootstrap.constants import *
-import pyperclip as pyc
 import datetime
 from tkinter import messagebox
 
+#-----------------------------------------------------------------
 # This is my module to read and return ini file key values
 # Keys are case-sensitive
 def striplist(lst):
@@ -51,7 +51,6 @@ def ini_read(inifile, *keys):
             rtv.append(0)
 
     return rtv
-
 # ----------------------------------------------------------------
 
 class Application(Frame):
@@ -95,11 +94,7 @@ class Application(Frame):
                            insertbackground='#000',   # cursor color
                            tabs=(efont.measure(' ' * 4),))
         self.txt.focus()
-        ## basic handler commands #
-        # .get("1.0", END)
-        # .delete("1.0", END)
-        # .insert("1.0", "New text content ...")
-        
+
 
         self.scrolly = Scrollbar(self, orient=VERTICAL, command=self.txt.yview)
         self.scrolly.grid(row=2, column=3, sticky='ns')  # use nse
@@ -157,19 +152,10 @@ class Application(Frame):
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0)
+        # display Gpt response in Text widget
         output = response["choices"][0]["text"]
         self.txt.delete("1.0", END)
         self.txt.insert("1.0", output)
-
-
-    # def on_copy(self):
-    #     ''' Copy all Text to clipboard '''
-    #     self.txt.tag_add(SEL, '1.0', END)
-    #     self.txt.mark_set(INSERT, '1.0')
-    #     self.txt.see(INSERT)
-    #     if self.txt.tag_ranges("sel"):
-    #         pyc.copy(self.txt.selection_get())
-    #         self.txt.tag_remove("sel", "1.0", END)
 
 
     def on_purge(self):
@@ -228,7 +214,7 @@ MyTheme, MyPath, GptKey = ini_read("gptgui.ini",
                                 'gptkey')
 #print("gptkey=", GptKey)
 
-root = Window("GptGUI", MyTheme)
+root = Window("GptGUI (OpenAI)", MyTheme)
 
 # change working directory to path for this file
 p = os.path.realpath(__file__)
@@ -243,6 +229,7 @@ else:
     root.geometry("675x505") # WxH+left+top
 
 root.protocol("WM_DELETE_WINDOW", save_location)  # TO SAVE GEOMETRY INFO
+root.minsize(425, 250)  # width, height
 Sizegrip(root).place(rely=1.0, relx=1.0, x=0, y=0, anchor='se')
 
 Application(root)
