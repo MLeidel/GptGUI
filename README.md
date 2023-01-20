@@ -1,6 +1,13 @@
 # GptGUI
+_Python GUI for Linux or Windows to access OpenAI Gpt Engine._
 
-Python GUI for Linux or Windows to access OpenAI Gpt Engine.
+## Instalation
+
+For windows you can downolad the setup_GptGUI.exe file supplied with this repo.
+
+For Linux / Mac you can either _gh repo clone MLeidel/GptGUI_ or download a zip
+file of this repo.
+
 
 Before using this application Python 3.x must be installed.
 
@@ -16,8 +23,9 @@ There is no cost to do so.
 #### For Windows:  
 Set a Windows _system environment variable_ to add your OpenAI KEY.  
 To do this go to the start menu and begin typing "advanced system settings".
-The System Properties dialog will appear. Next click the "Environment Variables" button.
+The _System Properties_ dialog will appear. Next click the "Environment Variables" button.
 Then click "New". Now enter __GPTKEY__ for _variable_ name and then your API Key for _value_.
+Done.
 
 ![Windows System Properties](images/envvar.png "Environment Variables on Windows System")
 
@@ -30,7 +38,7 @@ Don't forget to reboot.
 
 ### The second option is to edit the gptgui.ini file 
 
-The gptgui.ini file is in the gptgui (application's) directory. 
+The gptgui.ini file is in the gptgui (application's) directory.  
 With notepad (for Windows) or any plain text editor of your choice, 
 open the file and on the third line type:
 
@@ -73,18 +81,18 @@ then do not enter anything on the third line of gptgui.ini._
 ![alttext](images/GptGUI.png "GptGUI simple interface")
 
 __Input your query in the top box; hit Enter or click "Query".__  
-Gpt response will appear just below.  
+The Gpt AI response will appear just below.  
 
 The buttons:
 - Clear
 > Clears the query box and the response area.
 - Save
-> Save the response area with the query into your querysave file
+> Save the response area with the query into your myqueries.txt file
 that was set up in gptgui.ini.
 - View
-> Displays the query-save file you set up in gptgui.ini.  
+> Displays the myqueries.txt file you set up in gptgui.ini.  
 You cannot edit the file hear.
 - Purge
-> Clears the contens of the query-save file.
+> Clears the contens of the myqueries.txt file.
 
 ---
