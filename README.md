@@ -11,14 +11,13 @@ You will also have to Sign Up at https://openai.com/api/ and __create
 anAPI Key__.  
 There is no cost to do so.
 
-There are two options to apply the key to the program.  
-
+### _There are two options to apply your key to the program_.  
 ### The first option is to set the GPTKEY as an environment variable.  
-#### For Windows it goes like this:  
-Finally, you will have to edit the Windows _system environment variables_ to add
-the API Key. To do this go to the start menu and begin typing "advanced system settings".
+#### For Windows:  
+Set a Windows _system environment variable_ to add your OpenAI KEY.  
+To do this go to the start menu and begin typing "advanced system settings".
 The System Properties dialog will appear. Next click the "Environment Variables" button.
-Then click "New". Hear enter __GPTKEY__ for _variable_ name and then your API Key for _value_.
+Then click "New". Now enter __GPTKEY__ for _variable_ name and then your API Key for _value_.
 ![Windows System Properties](images/envvar.png "Environment Variables on Windows System")
 
 #### For Linux (or Mac)
