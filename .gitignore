@@ -2,6 +2,5 @@
 __pycache__/
 sendfile.py
 .gitignore
-output.py
-layout_tpl.xlsx
 getmd
+gptkey.txt

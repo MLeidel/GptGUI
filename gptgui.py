@@ -127,9 +127,11 @@ class Application(Frame):
                  pady=(5,0), padx=5)
 
         self.query.bind("<Return>", self.on_submit)
+        root.bind("<Control-k>", self.input_gpt_key)
         root.bind("<Control-q>", save_location)
         self.query.focus_set()
 
+#----------------------------------------------------------------------
 
     def on_submit(self, e=None):
         ''' Query OpenAI Gpt engine and display response in Text widgit'''
@@ -137,28 +139,33 @@ class Application(Frame):
         if len(querytext) < 4:
             return
         self.save.configure(bootstyle="default") # new - not been saved
-        # User can store the GPTKEY in the gptgui.ini file
-        # or set it in env variable GPTKEY
-        if GptKey == 0:
-            openai.api_key = os.getenv("GPTKEY")
-        else:
-            openai.api_key = GptKey
-        # print(querytext)
-        response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=querytext.strip(),
-        temperature=0.7,
-        max_tokens=500,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0)
-        # display Gpt response in Text widget
-        output = response["choices"][0]["text"]
-        self.txt.delete("1.0", END)
-        self.txt.insert("1.0", output)
+        # get the Gpt user's key from file
+        try:
+            openai.api_key = open("gptkey.txt").read().strip()
+        except Exception as e:
+            messagebox.showerror("Could Not Read Key file",
+                       "Did you enter your Gpt Key? <ctrl-k>")
+            return
+
+        try:
+            response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=querytext.strip(),
+            temperature=0.7,
+            max_tokens=500,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0)
+            # display Gpt response in Text widget
+            output = response["choices"][0]["text"]
+            self.txt.delete("1.0", END)
+            self.txt.insert("1.0", output)
+        except Exception as e:
+            messagebox.showerror("Problems", "Possible 'key' error")
 
 
     def on_purge(self):
+        ''' User is purging the query-save file '''
         if not os.path.isfile(MyPath):
             messagebox.showwarning(MyPath, "Empty - No File to purge")
             return
@@ -169,6 +176,7 @@ class Application(Frame):
 
 
     def on_clear_all(self):
+        ''' User is clearning the GUI fields '''
         self.txt.delete("1.0", END)
         self.ventry.set("")
 
@@ -197,6 +205,40 @@ class Application(Frame):
             self.txt.insert("1.0", fin.read())
         self.ventry.set("")
 
+#---------inputbox--------------
+    def input_gpt_key(self, e=None):
+        ''' launches the inputbox test '''
+        self.inputbox("Gpt Key",
+                 "Copy and Paste your Gpt key here and click OK")
+
+    def on_inputbox_return(self, t, text):
+        ''' process the inputbox return data '''
+        t.destroy()  # remove the inputbox toplevel
+        if text == "cancel":
+            return
+        open("gptkey.txt", "w").write(text)
+
+    def inputbox(self, title, prompt):
+        t = Toplevel()
+        t.wm_title(title)
+        l = Label(t, text=prompt)
+        l.grid(row=0, column=1, padx=5, pady=10, sticky="ew")
+        ###
+        vinput = StringVar()
+        input = Entry(t, textvariable=vinput)
+        input.grid(row=1, column=1, sticky='ew', padx=5)
+        ###
+        frm = Frame(t)
+        frm.grid(row=2, column=1, pady=5, padx=5)
+        ###
+        btn_ok = Button(frm, text='OK',
+                        command=lambda: self.on_inputbox_return(t, vinput.get()))
+        btn_ok.grid(row=1, column=1, sticky='w', padx=5, pady=5)
+        btn_cancel = Button(frm, text='Cancel',
+                            command=lambda: self.on_inputbox_return(t, "cancel"))
+        btn_cancel.grid(row=1, column=2, sticky='e')
+#-----------------------
+
 
 # SAVE GEOMETRY INFO AND EXIT
 def save_location(e=None):
@@ -208,10 +250,9 @@ def save_location(e=None):
 
 now = datetime.datetime.now()
 
-MyTheme, MyPath, GptKey = ini_read("gptgui.ini",
+MyTheme, MyPath = ini_read("gptgui.ini",
                                 'theme',
-                                'path',
-                                'gptkey')
+                                'path')
 #print("gptkey=", GptKey)
 
 root = Window("GptGUI (OpenAI)", MyTheme)
