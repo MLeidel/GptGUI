@@ -7,6 +7,7 @@ import os, sys
 from tkinter.font import Font
 from ttkbootstrap import *
 from ttkbootstrap.constants import *
+from ttkbootstrap.tooltip import ToolTip
 import datetime
 from tkinter import messagebox
 
@@ -75,12 +76,24 @@ class Application(Frame):
                 sticky="nsew"
         --------------------------------------'''
 
-        self.ventry = StringVar()
-        self.query = Entry(self, textvariable=self.ventry)
-        self.query.grid(row=1, column=1, columnspan=2, sticky='ew')
-
-        self.sub = Button(self, text='Query', command=self.on_submit)
-        self.sub.grid(row=1, column=2, columnspan=2, sticky='e', pady=5)
+        # self.ventry = StringVar()
+        # self.query = Entry(self, textvariable=self.ventry)
+        # self.query.grid(row=1, column=1, columnspan=2, sticky='ew')
+        self.query = Text(self)
+        self.query.grid(row=1, column=1, columnspan=3, sticky='nsew')
+        efont = Font(family="Consolas", size=12)
+        self.query.configure(font=efont)
+        self.query.config(wrap="word", # wrap=NONE
+                           undo=True, # Tk 8.4
+                           width=50,
+                           height=4,
+                           padx=5, # inner margin
+                           #insertbackground='#000',   # cursor color
+                           tabs=(efont.measure(' ' * 4),))
+        self.query.focus()
+        ToolTip(self.query,
+                text="Type your query here. Then hit 'Submit Query",
+                bootstyle=(INFO))
 
         self.txt = Text(self)
         self.txt.grid(row=2, column=1, columnspan=2, sticky='nsew')
@@ -93,8 +106,6 @@ class Application(Frame):
                            padx=5, # inner margin
                            insertbackground='#000',   # cursor color
                            tabs=(efont.measure(' ' * 4),))
-        self.txt.focus()
-
 
         self.scrolly = Scrollbar(self, orient=VERTICAL, command=self.txt.yview)
         self.scrolly.grid(row=2, column=3, sticky='ns')  # use nse
@@ -120,13 +131,19 @@ class Application(Frame):
         purge = Button(btn_frame, text='Purge', command=self.on_purge)
         purge.grid(row=1, column=5, sticky='w',
                    pady=(5, 0), padx=5)
+        sub = Button(btn_frame,
+                     text='Submit Query',
+                     command=self.on_submit, width=35, bootstyle="outline")
+        sub.grid(row=1, column=6, sticky='w',
+                   pady=(5, 0), padx=(20, 0))
+
        # END BUTTON FRAME
 
         cls = Button(self, text='Close', command=save_location)
         cls.grid(row=4, column=2, columnspan=2, sticky='e',
                  pady=(5,0), padx=5)
 
-        self.query.bind("<Return>", self.on_submit)
+        #self.query.bind("<Return>", self.on_submit)
         root.bind("<Control-k>", self.input_gpt_key)
         root.bind("<Control-q>", save_location)
         self.query.focus_set()
@@ -135,7 +152,8 @@ class Application(Frame):
 
     def on_submit(self, e=None):
         ''' Query OpenAI Gpt engine and display response in Text widgit'''
-        querytext = self.ventry.get()
+        #querytext = self.ventry.get()
+        querytext = self.query.get("1.0", END)
         if len(querytext) < 4:
             return
         self.save.configure(bootstyle="default") # new - not been saved
