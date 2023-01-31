@@ -1,6 +1,6 @@
 '''
 code file: gptgui.py
-date: 1-13-2023
+date: 1-31-2023
 '''
 import openai
 import os, sys
@@ -76,9 +76,6 @@ class Application(Frame):
                 sticky="nsew"
         --------------------------------------'''
 
-        # self.ventry = StringVar()
-        # self.query = Entry(self, textvariable=self.ventry)
-        # self.query.grid(row=1, column=1, columnspan=2, sticky='ew')
         self.query = Text(self)
         self.query.grid(row=1, column=1, columnspan=3, sticky='nsew')
         efont = Font(family="Consolas", size=12)
@@ -152,7 +149,6 @@ class Application(Frame):
 
     def on_submit(self, e=None):
         ''' Query OpenAI Gpt engine and display response in Text widgit'''
-        #querytext = self.ventry.get()
         querytext = self.query.get("1.0", END)
         if len(querytext) < 4:
             return
@@ -196,13 +192,13 @@ class Application(Frame):
     def on_clear_all(self):
         ''' User is clearning the GUI fields '''
         self.txt.delete("1.0", END)
-        self.ventry.set("")
+        self.query.delete("1.0", END)
 
 
     def on_save_file(self):
         ''' Save the current query and result to user file (MyPath) '''
         resp = self.txt.get("1.0", END).strip()
-        qury = self.ventry.get().strip()
+        qury = self.query.get("1.0", END).strip()
         if qury == "" or resp == "":  # make sure there is a query present
             return
         with open(MyPath, "a") as fout:
@@ -221,7 +217,7 @@ class Application(Frame):
         self.txt.delete("1.0", END)
         with open(MyPath, "r") as fin:
             self.txt.insert("1.0", fin.read())
-        self.ventry.set("")
+        self.query.delete("1.0", END)
 
 #---------inputbox--------------
     def input_gpt_key(self, e=None):
@@ -273,7 +269,7 @@ MyTheme, MyPath = ini_read("gptgui.ini",
                                 'path')
 #print("gptkey=", GptKey)
 
-root = Window("GptGUI (OpenAI)", MyTheme)
+root = Window("GptGUI (OpenAI)", MyTheme, iconphoto="icon.png")
 
 # change working directory to path for this file
 p = os.path.realpath(__file__)

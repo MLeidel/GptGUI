@@ -54,7 +54,7 @@ theme=cyborg
 
 ![alttext](images/GptGUI.png "GptGUI simple interface")
 
-__Input your query in the top box; hit Enter or click "Query".__  
+__Input your query in the top box, and hit "Submit Query".__  
 The Gpt AI response will appear just below.
 
 The buttons:
