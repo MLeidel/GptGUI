@@ -10,6 +10,7 @@ from ttkbootstrap.constants import *
 from ttkbootstrap.tooltip import ToolTip
 import datetime
 from tkinter import messagebox
+from tkinter import simpledialog
 
 #-----------------------------------------------------------------
 # This is my module to read and return ini file key values
@@ -107,10 +108,6 @@ class Application(Frame):
         self.scrolly = Scrollbar(self, orient=VERTICAL, command=self.txt.yview)
         self.scrolly.grid(row=2, column=3, sticky='ns')  # use nse
         self.txt['yscrollcommand'] = self.scrolly.set
-        # DON'T NEED HORZ SCROLLING
-        # self.scrollx = Scrollbar(self, orient=HORIZONTAL, command=self.txt.xview)
-        # self.scrollx.grid(row=3, column=1, columnspan=2, sticky='ew')
-        # self.txt['xscrollcommand'] = self.scrollx.set
 
         # BUTTON FRAME
         btn_frame = Frame(self)
@@ -219,39 +216,13 @@ class Application(Frame):
             self.txt.insert("1.0", fin.read())
         self.query.delete("1.0", END)
 
-#---------inputbox--------------
+
     def input_gpt_key(self, e=None):
         ''' launches the inputbox test '''
-        self.inputbox("Gpt Key",
+        text = simpledialog.askstring("Gpt Key",
                  "Copy and Paste your Gpt key here and click OK")
-
-    def on_inputbox_return(self, t, text):
-        ''' process the inputbox return data '''
-        t.destroy()  # remove the inputbox toplevel
-        if text == "cancel":
-            return
-        open("gptkey.txt", "w").write(text)
-
-    def inputbox(self, title, prompt):
-        t = Toplevel()
-        t.wm_title(title)
-        l = Label(t, text=prompt)
-        l.grid(row=0, column=1, padx=5, pady=10, sticky="ew")
-        ###
-        vinput = StringVar()
-        input = Entry(t, textvariable=vinput)
-        input.grid(row=1, column=1, sticky='ew', padx=5)
-        ###
-        frm = Frame(t)
-        frm.grid(row=2, column=1, pady=5, padx=5)
-        ###
-        btn_ok = Button(frm, text='OK',
-                        command=lambda: self.on_inputbox_return(t, vinput.get()))
-        btn_ok.grid(row=1, column=1, sticky='w', padx=5, pady=5)
-        btn_cancel = Button(frm, text='Cancel',
-                            command=lambda: self.on_inputbox_return(t, "cancel"))
-        btn_cancel.grid(row=1, column=2, sticky='e')
-#-----------------------
+        if text is not None:
+            open("gptkey.txt", "w").write(text)
 
 
 # SAVE GEOMETRY INFO AND EXIT
