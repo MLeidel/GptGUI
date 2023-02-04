@@ -39,8 +39,17 @@ class Application(Frame):
         lbl = Label(self, text='Font Gpt Size')
         lbl.grid(row=6, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Gpt Key')
+        lbl = Label(self, text='Engine')
         lbl.grid(row=7, column=1, sticky='e', pady=4, padx=4)
+
+        lbl = Label(self, text='Temperature')
+        lbl.grid(row=8, column=1, sticky='e', pady=4, padx=4)
+
+        lbl = Label(self, text='Tokens')
+        lbl.grid(row=9, column=1, sticky='e', pady=4, padx=4)
+
+        lbl = Label(self, text='Gpt Key')
+        lbl.grid(row=10, column=1, sticky='e', pady=4, padx=4)
 
         self.vent_theme = StringVar()
         ent_theme = Combobox(self, textvariable=self.vent_theme, width=10)
@@ -50,34 +59,47 @@ class Application(Frame):
         ent_theme.grid(row=1, column=2, sticky='w', pady=4, padx=4)
 
         self.vent_path = StringVar()
-        # self.vent_path.trace("w", self.eventHandler)
         ent_path = Entry(self, textvariable=self.vent_path, width=30)
         ent_path.grid(row=2, column=2, sticky='w', pady=4, padx=4)
 
         self.vent_fqfam = StringVar()
-        # self.vent_fqfam.trace("w", self.eventHandler)
         ent_fqfam = Entry(self, textvariable=self.vent_fqfam, width=12)
         ent_fqfam.grid(row=3, column=2, sticky='w', pady=4, padx=4)
 
         self.vent_fqsiz = StringVar()
-        # self.vent_fqsiz.trace("w", self.eventHandler)
-        ent_fqsiz = Entry(self, textvariable=self.vent_fqsiz, width=2)
+        ent_fqsiz = Entry(self, textvariable=self.vent_fqsiz, width=3)
         ent_fqsiz.grid(row=4, column=2, sticky='w', pady=4, padx=4)
 
         self.vent_fgfam = StringVar()
-        # self.vent_fgfam.trace("w", self.eventHandler)
         ent_fgfam = Entry(self, textvariable=self.vent_fgfam, width=12)
         ent_fgfam.grid(row=5, column=2, sticky='w', pady=4, padx=4)
 
         self.vent_fgsiz = StringVar()
-        # self.vent_fgsiz.trace("w", self.eventHandler)
-        ent_fgsiz = Entry(self, textvariable=self.vent_fgsiz, width=2)
+        ent_fgsiz = Entry(self, textvariable=self.vent_fgsiz, width=3)
         ent_fgsiz.grid(row=6, column=2, sticky='w', pady=4, padx=4)
+
+        self.vcmbo_model = StringVar()
+        cmbo_model = Combobox(self, textvariable=self.vcmbo_model, width=15)
+        cmbo_model['values'] = ('text-davinci-003', 'text-curie-001', 'text-babbage-001', 'text-ada-001')
+        # COMBO.bind('<<ComboboxSelected>>', self.ONCOMBOSELECT)
+        # ent_model.current(0)
+        cmbo_model.grid(row=7, column=2, sticky='w', pady=4, padx=4)
+
+        self.vcmbo_temp = StringVar()
+        cmbo_temp = Combobox(self, textvariable=self.vcmbo_temp, width=6)
+        cmbo_temp['values'] = ('0.7', '0.8', '0.9', '1.0', '1.2')
+        # COMBO.bind('<<ComboboxSelected>>', self.ONCOMBOSELECT)
+        # ent_model.current(0)
+        cmbo_temp.grid(row=8, column=2, sticky='w', pady=4, padx=4)
+
+        self.vent_token = StringVar()
+        ent_token = Entry(self, textvariable=self.vent_token, width=4)
+        ent_token.grid(row=9, column=2, sticky='w', pady=4, padx=4)
 
         self.vent_gptkey = StringVar()
         # self.vent_gptkey.trace("w", self.eventHandler)
         ent_gptkey = Entry(self, textvariable=self.vent_gptkey, width=30)
-        ent_gptkey.grid(row=7, column=2, sticky='w', pady=4, padx=4)
+        ent_gptkey.grid(row=10, column=2, sticky='w', pady=4, padx=4)
 
         btn_path = Button(self, text='Browse', command=self.browse_path)
         btn_path.grid(row=2, column=3, pady=4, padx=4)
@@ -89,7 +111,7 @@ class Application(Frame):
         btn_gfont.grid(row=5, column=3, pady=4, padx=4)
 
         btn_close = Button(self, text='Save & Close', command=self.on_close)
-        btn_close.grid(row=9, column=3, pady=4, padx=4)
+        btn_close.grid(row=11, column=2, pady=4, padx=4)
 
         # set initial field values from ini file
         self.vent_theme.set(MyTheme)
@@ -99,6 +121,10 @@ class Application(Frame):
         self.vent_fgfam.set(MyFntGptF)
         self.vent_fgsiz.set(MyFntGptZ)
         self.vent_gptkey.set(MyKey)
+        self.vcmbo_model.set(MyModel)
+        self.vcmbo_temp.set(MyTemp)
+        self.vent_token.set(MyTokens)
+
 
     def browse_path(self):
         ''' browse with filedialog for directory '''
@@ -131,6 +157,10 @@ class Application(Frame):
         config['Main']['gptkey'] = self.vent_gptkey.get().strip()
         config['Main']['theme'] = self.vent_theme.get()
         config['Main']['path'] = self.vent_path.get()
+        config['Main']['engine'] = self.vcmbo_model.get()
+        config['Main']['temperature'] = self.vcmbo_temp.get()
+        config['Main']['tokens'] = self.vent_token.get()
+
         with open('gptgui.ini', 'w') as configfile:
             config.write(configfile)
         messagebox.showinfo("GptGUI Options",
@@ -153,6 +183,9 @@ MyFntQryF = config['Main']['fontqryfam']
 MyFntQryZ = config['Main']['fontqrysiz']
 MyFntGptF = config['Main']['fontgptfam']
 MyFntGptZ = config['Main']['fontgptsiz']
+MyModel = config['Main']['engine']
+MyTemp = config['Main']['temperature']
+MyTokens = config['Main']['tokens']
 MyKey = config['Main']['gptkey']
 
 # change working directory to path for this file

@@ -2,20 +2,19 @@
 code file: gptgui.py
 date: 1-31-2023
 '''
-import openai
-import os, sys
+import os
 import configparser
 from tkinter.font import Font
 from tkinter import messagebox
-from tkinter import simpledialog
+import subprocess
 from ttkbootstrap import *
 from ttkbootstrap.constants import *
 from ttkbootstrap.tooltip import ToolTip
 import datetime
-import subprocess
+import openai
 
 PY = "python3"  # Linux
-# PY = "python"   # Windows
+# PY = "pythonw"  # Windows
 
 class Application(Frame):
     ''' main class docstring '''
@@ -30,14 +29,6 @@ class Application(Frame):
         self.columnconfigure(1, weight=1, pad=5)
         self.columnconfigure(2, weight=1, pad=5)
         self.rowconfigure(2, weight=1, pad=5)
-
-        ''' ONLY OPTIONS FOR 'grid' FUNCTIONS:
-                column  row
-                columnspan  rowspan
-                ipadx and ipady
-                padx and pady
-                sticky="nsew"
-        --------------------------------------'''
 
         self.query = Text(self)
         self.query.grid(row=1, column=1, columnspan=2, sticky='nsew')
@@ -136,10 +127,10 @@ class Application(Frame):
         # things are locked up until response returns
         try:
             response = openai.Completion.create(
-            model="text-davinci-003",
+            model=MyModel,
             prompt=querytext.strip(),
-            temperature=0.7,
-            max_tokens=500,
+            temperature=float(MyTemp),
+            max_tokens=int(MyTokens),
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0)
@@ -173,10 +164,13 @@ class Application(Frame):
         qury = self.query.get("1.0", END).strip()
         if qury == "" or resp == "":  # make sure there is a query present
             return
-        with open(MyPath, "a") as fout:
-            fout.write(str(now.strftime("%Y-%m-%d %H:%M\n")))
-            fout.write(qury + "\n-----\n")
-            fout.write(resp.strip() + "\n----------------\n\n")
+        try:
+            with open(MyPath, "a") as fout:
+                fout.write(str(now.strftime("%Y-%m-%d %H:%M\n")))
+                fout.write(qury + "\n-----\n")
+                fout.write(resp.strip() + "\n----------------\n\n")
+        except Exception as e:
+            messagebox.showerror("Save Query Problem", e)
         # indicate that a "save" has processed
         self.save.configure(bootstyle="default-outline")
 
@@ -193,8 +187,8 @@ class Application(Frame):
 
 
     def options(self):
-       # os.system("python3 gptopt.py") # not work well with Windows
-       subprocess.Popen([PY, "gptopt.py"])
+        # os.system("python3 gptopt.py") # not work well with Windows
+        subprocess.Popen([PY, "gptopt.py"])
 
 
 # SAVE GEOMETRY INFO AND EXIT
@@ -217,7 +211,10 @@ MyFntQryF = config['Main']['fontqryfam']
 MyFntQryZ = config['Main']['fontqrysiz']
 MyFntGptF = config['Main']['fontgptfam']
 MyFntGptZ = config['Main']['fontgptsiz']
-MyKey = config['Main']['gptkey'].strip()
+MyModel = config['Main']['engine']
+MyTemp = config['Main']['temperature']
+MyTokens = config['Main']['tokens']
+MyKey = config['Main']['gptkey']
 
 # define main window
 root = Window("GptGUI (OpenAI)", MyTheme, iconphoto="icon.png")
