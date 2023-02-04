@@ -130,7 +130,7 @@ class Application(Frame):
             openai.api_key = MyKey
         except Exception as e:
             messagebox.showerror("Could Not Read Key file",
-                       "Did you enter your Gpt Key? <ctrl-k>")
+                       "Did you enter your Gpt Key?")
             return
         # may take some time
         # things are locked up until response returns
@@ -148,7 +148,7 @@ class Application(Frame):
             self.txt.delete("1.0", END)
             self.txt.insert("1.0", output)
         except Exception as e:
-            messagebox.showerror("Problems", "Possible 'key' error")
+            messagebox.showerror("Problems", e)
 
     def on_purge(self):
         ''' User is purging the query-save file '''
@@ -217,7 +217,7 @@ MyFntQryF = config['Main']['fontqryfam']
 MyFntQryZ = config['Main']['fontqrysiz']
 MyFntGptF = config['Main']['fontgptfam']
 MyFntGptZ = config['Main']['fontgptsiz']
-MyKey = config['Main']['gptkey']
+MyKey = config['Main']['gptkey'].strip()
 
 # define main window
 root = Window("GptGUI (OpenAI)", MyTheme, iconphoto="icon.png")

@@ -128,7 +128,7 @@ class Application(Frame):
         config['Main']['fontqrysiz'] = self.vent_fqsiz.get()
         config['Main']['fontgptfam'] = self.vent_fgfam.get()
         config['Main']['fontgptsiz'] = self.vent_fgsiz.get()
-        config['Main']['gptkey'] = self.vent_gptkey.get()
+        config['Main']['gptkey'] = self.vent_gptkey.get().strip()
         config['Main']['theme'] = self.vent_theme.get()
         config['Main']['path'] = self.vent_path.get()
         with open('gptgui.ini', 'w') as configfile:
