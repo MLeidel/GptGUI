@@ -4,56 +4,18 @@ date: 1-31-2023
 '''
 import openai
 import os, sys
+import configparser
 from tkinter.font import Font
+from tkinter import messagebox
+from tkinter import simpledialog
 from ttkbootstrap import *
 from ttkbootstrap.constants import *
 from ttkbootstrap.tooltip import ToolTip
 import datetime
-from tkinter import messagebox
-from tkinter import simpledialog
+import subprocess
 
-#-----------------------------------------------------------------
-# This is my module to read and return ini file key values
-# Keys are case-sensitive
-def striplist(lst):
-    ''' strip items in a list and return list '''
-    L = [i.strip() for i in lst]
-    return L
-
-def ini_read(inifile, *keys):
-    ''' Open and read text file having "key = value" lines
-        Build a dictionary - use it to build a list of
-        values to return in the order received.
-    '''
-
-    kv = []  # one key/value item from ini file
-
-    kvs = {}  # key/value dictionary built from ini file
-
-    rtv = []  # return values stored here in kargs order
-
-    with open(inifile) as f:
-        for line in f:
-            line = line.strip()
-            if line == "":
-                continue
-            if line.startswith('#'):
-                continue
-            # Build dictionary line by line from ini file
-            kv = line.split('=')
-            kv = striplist(kv)
-            kvs[kv[0]] = kv[1]  # add to dictionary
-
-    # Append requested key values and return list
-    for v in keys:
-        try:
-            rtv.append(kvs[v])
-        except:
-            print("ini - Key Error or not used:", v)
-            rtv.append(0)
-
-    return rtv
-# ----------------------------------------------------------------
+PY = "python3"  # Linux
+# PY = "python"   # Windows
 
 class Application(Frame):
     ''' main class docstring '''
@@ -78,31 +40,32 @@ class Application(Frame):
         --------------------------------------'''
 
         self.query = Text(self)
-        self.query.grid(row=1, column=1, columnspan=3, sticky='nsew')
-        efont = Font(family="Consolas", size=12)
+        self.query.grid(row=1, column=1, columnspan=2, sticky='nsew')
+        efont = Font(family=MyFntQryF, size=MyFntQryZ)
         self.query.configure(font=efont)
         self.query.config(wrap="word", # wrap=NONE
                            undo=True, # Tk 8.4
                            width=50,
-                           height=4,
+                           height=5,
                            padx=5, # inner margin
                            #insertbackground='#000',   # cursor color
                            tabs=(efont.measure(' ' * 4),))
-        self.query.focus()
-        ToolTip(self.query,
-                text="Type your query here. Then hit 'Submit Query",
-                bootstyle=(INFO))
+
+        self.scrolly = Scrollbar(self, orient=VERTICAL,
+                                 command=self.query.yview)
+        self.scrolly.grid(row=1, column=3, sticky='ns')  # use nse
+        self.query['yscrollcommand'] = self.scrolly.set
 
         self.txt = Text(self)
         self.txt.grid(row=2, column=1, columnspan=2, sticky='nsew')
-        efont = Font(family="Consolas", size=12)
+        efont = Font(family=MyFntGptF, size=MyFntGptZ)
         self.txt.configure(font=efont)
         self.txt.config(wrap="word", # wrap=NONE
                            undo=True, # Tk 8.4
                            width=50,
                            height=12,
                            padx=5, # inner margin
-                           insertbackground='#000',   # cursor color
+                           #insertbackground='#000',   # cursor color
                            tabs=(efont.measure(' ' * 4),))
 
         self.scrolly = Scrollbar(self, orient=VERTICAL, command=self.txt.yview)
@@ -125,10 +88,13 @@ class Application(Frame):
         purge = Button(btn_frame, text='Purge', command=self.on_purge)
         purge.grid(row=1, column=5, sticky='w',
                    pady=(5, 0), padx=5)
-        sub = Button(btn_frame,
+        opts = Button(btn_frame, text='Options', command=self.options)
+        opts.grid(row=1, column=6, sticky='w',
+                   pady=(5, 0), padx=5)
+        self.sub = Button(btn_frame,
                      text='Submit Query',
-                     command=self.on_submit, width=35, bootstyle="outline")
-        sub.grid(row=1, column=6, sticky='w',
+                     command=self.on_submit, width=35)
+        self.sub.grid(row=1, column=7, sticky='w',
                    pady=(5, 0), padx=(20, 0))
 
        # END BUTTON FRAME
@@ -137,9 +103,18 @@ class Application(Frame):
         cls.grid(row=4, column=2, columnspan=2, sticky='e',
                  pady=(5,0), padx=5)
 
-        #self.query.bind("<Return>", self.on_submit)
-        root.bind("<Control-k>", self.input_gpt_key)
+        # Bindings
+        root.bind("<Control-k>", self.options)
         root.bind("<Control-q>", save_location)
+
+        # ToolTips
+        ToolTip(self.query,
+                text="Type your query here. Then hit 'Submit Query",
+                bootstyle=(INFO))
+        ToolTip(purge,
+                text="Remove all saved query responses",
+                bootstyle=(INFO))
+
         self.query.focus_set()
 
 #----------------------------------------------------------------------
@@ -149,15 +124,16 @@ class Application(Frame):
         querytext = self.query.get("1.0", END)
         if len(querytext) < 4:
             return
-        self.save.configure(bootstyle="default") # new - not been saved
-        # get the Gpt user's key from file
+        self.save.configure(bootstyle=DEFAULT) # new - not been saved
+        # get the Gpt key from the ini value
         try:
-            openai.api_key = open("gptkey.txt").read().strip()
+            openai.api_key = MyKey
         except Exception as e:
             messagebox.showerror("Could Not Read Key file",
                        "Did you enter your Gpt Key? <ctrl-k>")
             return
-
+        # may take some time
+        # things are locked up until response returns
         try:
             response = openai.Completion.create(
             model="text-davinci-003",
@@ -173,7 +149,6 @@ class Application(Frame):
             self.txt.insert("1.0", output)
         except Exception as e:
             messagebox.showerror("Problems", "Possible 'key' error")
-
 
     def on_purge(self):
         ''' User is purging the query-save file '''
@@ -217,12 +192,9 @@ class Application(Frame):
         self.query.delete("1.0", END)
 
 
-    def input_gpt_key(self, e=None):
-        ''' launches the inputbox test '''
-        text = simpledialog.askstring("Gpt Key",
-                 "Copy and Paste your Gpt key here and click OK")
-        if text is not None:
-            open("gptkey.txt", "w").write(text)
+    def options(self):
+       # os.system("python3 gptopt.py") # not work well with Windows
+       subprocess.Popen([PY, "gptopt.py"])
 
 
 # SAVE GEOMETRY INFO AND EXIT
@@ -232,14 +204,22 @@ def save_location(e=None):
         fout.write(root.geometry())
     root.destroy()
 
-
+# used for saving queries with date and time
 now = datetime.datetime.now()
 
-MyTheme, MyPath = ini_read("gptgui.ini",
-                                'theme',
-                                'path')
-#print("gptkey=", GptKey)
+# get settings from ini file
+config = configparser.ConfigParser()
+config.read('gptgui.ini')
 
+MyTheme = config['Main']['theme']
+MyPath = config['Main']['path']
+MyFntQryF = config['Main']['fontqryfam']
+MyFntQryZ = config['Main']['fontqrysiz']
+MyFntGptF = config['Main']['fontgptfam']
+MyFntGptZ = config['Main']['fontgptsiz']
+MyKey = config['Main']['gptkey']
+
+# define main window
 root = Window("GptGUI (OpenAI)", MyTheme, iconphoto="icon.png")
 
 # change working directory to path for this file
