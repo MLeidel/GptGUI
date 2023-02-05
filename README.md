@@ -22,12 +22,15 @@ There is no cost to do so.
 ___
 
 ### Your Gpt API key will look someting like this:
->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
+>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
 
 After starting the app the first time click the _Options_
 button.
 
-Then copy and past your API key into the box.  
+Copy and past your API key into the "Gpt Key" entry box.  
+A better way to handle your API key is to set it up in a System Environment Variable.  
+Then put the variable's name into the "Gpt Key" entry box.
+
 Change any other appearance or Gpt options as well.  
 Then click the _Save & Close_ button.
 

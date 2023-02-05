@@ -36,12 +36,12 @@ class Application(Frame):
         efont = Font(family=MyFntQryF, size=MyFntQryZ)
         self.query.configure(font=efont)
         self.query.config(wrap="word", # wrap=NONE
-                           undo=True, # Tk 8.4
-                           width=50,
-                           height=5,
-                           padx=5, # inner margin
-                           #insertbackground='#000',   # cursor color
-                           tabs=(efont.measure(' ' * 4),))
+                          undo=True, # Tk 8.4
+                          width=50,
+                          height=5,
+                          padx=5, # inner margin
+                          #insertbackground='#000',   # cursor color
+                          tabs=(efont.measure(' ' * 4),))
 
         self.scrolly = Scrollbar(self, orient=VERTICAL,
                                  command=self.query.yview)
@@ -53,12 +53,12 @@ class Application(Frame):
         efont = Font(family=MyFntGptF, size=MyFntGptZ)
         self.txt.configure(font=efont)
         self.txt.config(wrap="word", # wrap=NONE
-                           undo=True, # Tk 8.4
-                           width=50,
-                           height=12,
-                           padx=5, # inner margin
-                           #insertbackground='#000',   # cursor color
-                           tabs=(efont.measure(' ' * 4),))
+                        undo=True, # Tk 8.4
+                        width=50,
+                        height=12,
+                        padx=5, # inner margin
+                        #insertbackground='#000',   # cursor color
+                        tabs=(efont.measure(' ' * 4),))
 
         self.scrolly = Scrollbar(self, orient=VERTICAL, command=self.txt.yview)
         self.scrolly.grid(row=2, column=3, sticky='ns')  # use nse
@@ -97,7 +97,7 @@ class Application(Frame):
 
         # Bindings
         root.bind("<Control-k>", self.options)
-        root.bind("<Control-q>", save_location)
+        root.bind("<Control-q>", save_location)  # Quit program
 
         # ToolTips
         ToolTip(self.query,
@@ -228,7 +228,9 @@ MyFntGptZ = config['Main']['fontgptsiz']
 MyModel = config['Main']['engine']
 MyTemp = config['Main']['temperature']
 MyTokens = config['Main']['tokens']
-MyKey = config['Main']['gptkey']
+MyKey = config['Main']['gptkey']  # can be actual key or ENV var.
+if len(MyKey) < 16:
+    MyKey = os.environ.get(MyKey)  # Using ENV var instead of actual key string.
 
 # define main window
 root = Window("GptGUI (OpenAI)", MyTheme, iconphoto="icon.png")
