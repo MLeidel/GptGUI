@@ -246,7 +246,7 @@ else:
     root.geometry("675x505") # WxH+left+top
 
 root.protocol("WM_DELETE_WINDOW", save_location)  # TO SAVE GEOMETRY INFO
-root.minsize(425, 250)  # width, height
+root.minsize(768, 325)  # width, height
 Sizegrip(root).place(rely=1.0, relx=1.0, x=0, y=0, anchor='se')
 
 Application(root)
