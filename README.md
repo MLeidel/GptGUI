@@ -28,7 +28,7 @@ After starting the app the first time click the _Options_
 button.
 
 Then copy and past your API key into the box.  
-Change any other options as well.
+Change any other appearance or Gpt options as well.  
 Then click the _Save & Close_ button.
 
 ![input box](images/gptopts.png "Set options for GptGUI")

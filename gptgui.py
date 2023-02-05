@@ -21,6 +21,7 @@ class Application(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.pack(fill=BOTH, expand=True, padx=4, pady=4)
+        self.Saved = False
         self.create_widgets()
 
     def create_widgets(self):
@@ -116,6 +117,7 @@ class Application(Frame):
         if len(querytext) < 4:
             return
         self.save.configure(bootstyle=DEFAULT) # new - not been saved
+        self.Saved = False
         # get the Gpt key from the ini value
         try:
             openai.api_key = MyKey
@@ -156,6 +158,8 @@ class Application(Frame):
         ''' User is clearning the GUI fields '''
         self.txt.delete("1.0", END)
         self.query.delete("1.0", END)
+        self.save.configure(bootstyle=DEFAULT) # new - not been saved
+        self.Saved = False
 
 
     def on_save_file(self):
@@ -173,6 +177,7 @@ class Application(Frame):
             messagebox.showerror("Save Query Problem", e)
         # indicate that a "save" has processed
         self.save.configure(bootstyle="default-outline")
+        self.Saved = True
 
 
     def on_view_file(self):
@@ -180,6 +185,12 @@ class Application(Frame):
         if not os.path.isfile(MyPath):
             messagebox.showwarning(MyPath, "Empty - No File")
             return
+        if self.Saved is False:
+            if messagebox.askokcancel('GptGUI',
+                                      'Last response not saved - continue?') is False:
+                return
+        # self.Saved = True
+        # self.save.configure(bootstyle=DEFAULT)
         self.txt.delete("1.0", END)
         with open(MyPath, "r") as fin:
             self.txt.insert("1.0", fin.read())
@@ -194,6 +205,9 @@ class Application(Frame):
 # SAVE GEOMETRY INFO AND EXIT
 def save_location(e=None):
     ''' executes at WM_DELETE_WINDOW event - see below '''
+    if messagebox.askokcancel('GptGUI',
+                           'Did you want to leave this app?') is False:
+        return
     with open("winfo", "w") as fout:
         fout.write(root.geometry())
     root.destroy()
