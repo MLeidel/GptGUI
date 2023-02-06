@@ -21,7 +21,7 @@ class Application(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.pack(fill=BOTH, expand=True, padx=4, pady=4)
-        self.Saved = False
+        self.Saved = True
         self.create_widgets()
 
     def create_widgets(self):
@@ -156,10 +156,15 @@ class Application(Frame):
 
     def on_clear_all(self):
         ''' User is clearning the GUI fields '''
+        if self.Saved is False:
+            if messagebox.askokcancel('GptGUI',
+                                      'Last response not saved - continue?') is False:
+                return
+
         self.txt.delete("1.0", END)
         self.query.delete("1.0", END)
         self.save.configure(bootstyle=DEFAULT) # new - not been saved
-        self.Saved = False
+        self.Saved = True
 
 
     def on_save_file(self):
@@ -206,7 +211,7 @@ class Application(Frame):
 def save_location(e=None):
     ''' executes at WM_DELETE_WINDOW event - see below '''
     if messagebox.askokcancel('GptGUI',
-                           'Did you want to leave this app?') is False:
+                           'Did you want to close the app?') is False:
         return
     with open("winfo", "w") as fout:
         fout.write(root.geometry())
