@@ -1,6 +1,7 @@
 '''
 code file: gptgui.py
 date: 1-31-2023
+date: 2-07-2023 -> added result tokens messagebox
 '''
 import os
 import configparser
@@ -96,8 +97,11 @@ class Application(Frame):
                  pady=(5,0), padx=5)
 
         # Bindings
-        root.bind("<Control-k>", self.options)
-        root.bind("<Control-q>", save_location)  # Quit program
+        root.bind("<Control-t>", self.show_tokens)  # show result tokens
+        root.bind("<Control-k>", self.options)  # Options button
+        root.bind("<Control-q>", save_location)  # Close button
+        root.bind("<Control-s>", self.on_save_file)  # Save button
+        root.bind("<Control-g>", self.on_submit)  # Submit Query button
 
         # ToolTips
         ToolTip(self.query,
@@ -138,6 +142,12 @@ class Application(Frame):
             presence_penalty=0)
             # display Gpt response in Text widget
             output = response["choices"][0]["text"]
+            # collect response token info
+            self.length = len(output)
+            self.completion = response["usage"]["completion_tokens"]
+            self.total = response["usage"]["total_tokens"]
+            self.prompt = response["usage"]["prompt_tokens"]
+            # display response text
             self.txt.delete("1.0", END)
             self.txt.insert("1.0", output)
         except Exception as e:
@@ -167,7 +177,7 @@ class Application(Frame):
         self.Saved = True
 
 
-    def on_save_file(self):
+    def on_save_file(self, e=None):
         ''' Save the current query and result to user file (MyPath) '''
         resp = self.txt.get("1.0", END).strip()
         qury = self.query.get("1.0", END).strip()
@@ -194,8 +204,11 @@ class Application(Frame):
             if messagebox.askokcancel('GptGUI',
                                       'Last response not saved - continue?') is False:
                 return
-        # self.Saved = True
-        # self.save.configure(bootstyle=DEFAULT)
+        # Either the user has or has-not saved the current query reponse.
+        # Therefore, set the "Save" button back to DEFAULT because
+        # if the response was not saved prior, then it is just lost.
+        self.Saved = True
+        self.save.configure(bootstyle=DEFAULT)
         self.txt.delete("1.0", END)
         with open(MyPath, "r") as fin:
             self.txt.insert("1.0", fin.read())
@@ -205,6 +218,15 @@ class Application(Frame):
     def options(self):
         # os.system("python3 gptopt.py") # not work well with Windows
         subprocess.Popen([PY, "gptopt.py"])
+
+    def show_tokens(self, e=None):
+        ''' show response tokens '''
+        msg = "text length: " + str(self.length) + \
+              "\ncompletion tokens: " + str(self.completion) + \
+              "\ntotal tokens: " + str(self.total) + \
+              "\nprompt tokens: " + str(self.prompt)
+        messagebox.showinfo("GptGUI Response Tokens", msg)
+
 
 
 # SAVE GEOMETRY INFO AND EXIT

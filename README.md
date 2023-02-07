@@ -76,3 +76,21 @@ You cannot edit the file hear.
 > launches the Options editor.
 
 ---
+
+## Hot Keys
+
+```text
+
+  <Control-t>   Show result tokens
+  <Control-k>   Options button
+  <Control-q>   Close button
+  <Control-s>   Save button
+  <Control-g>   Submit Query button
+  
+```
+![Tokens](images/gpttokens.png "Tokens on Response")
+
+Show Results Tokens __Ctrl-t__
+
+----
+END
