@@ -34,7 +34,7 @@ Then put the variable's name into the "Gpt Key" entry box.
 Change any other appearance or Gpt options as well.  
 Then click the _Save & Close_ button.
 
-![input box](images/gptopts.png "Set options for GptGUI")
+![input box](images/gptopts.png "GptGUI options window")
 
 ---
 
@@ -56,9 +56,9 @@ a simple installation for Windows users.
 
 ### Using
 
-![alttext](images/gptgui.png "GptGUI simple interface")
+![alttext](images/gptgui.png "Ctrl-t for Response Metrics")
 
-Input your query in the top box, and hit __"Submit Query".__  
+Input your query in the top box, and hit __"Submit Query"__ or _Ctrl-g_.  
 The Gpt AI response will appear in the larger box below.
 
 The buttons:
@@ -79,18 +79,7 @@ You cannot edit the file hear.
 
 ## Hot Keys
 
-```text
-
-  <Control-t>   Show result tokens
-  <Control-k>   Options button
-  <Control-q>   Close button
-  <Control-s>   Save button
-  <Control-g>   Submit Query button
-  
-```
-![Tokens](images/gpttokens.png "Tokens on Response")
-
-Show Results Tokens __Ctrl-t__
+![Tokens](images/gptkeys.png "Hot Keys")
 
 ----
 END
