@@ -3,7 +3,6 @@ __pycache__/
 sendfile.py
 .gitignore
 getmd
-gptkey.txt
 savequery.txt
 *.zip
 

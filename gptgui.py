@@ -2,12 +2,14 @@
 code file: gptgui.py
 date: 1-31-2023
 date: 2-07-2023 -> added result tokens messagebox
+date: 2-08-2023 -> added time elapsed and title specs
 '''
 import os
+import time
 import configparser
+import subprocess
 from tkinter.font import Font
 from tkinter import messagebox
-import subprocess
 from ttkbootstrap import *
 from ttkbootstrap.constants import *
 from ttkbootstrap.tooltip import ToolTip
@@ -97,7 +99,9 @@ class Application(Frame):
                  pady=(5,0), padx=5)
 
         # Bindings
-        root.bind("<Control-t>", self.show_tokens)  # show result tokens
+        root.bind("<Control-t>", self.show_tokens)  # Show result tokens in title
+        root.bind("<Control-m>", self.on_toggle_time)  # time elapsed toggle
+        root.bind("<Control-h>", self.on_kb_help)  # show hotkey help
         root.bind("<Control-k>", self.options)  # Options button
         root.bind("<Control-q>", save_location)  # Close button
         root.bind("<Control-s>", self.on_save_file)  # Save button
@@ -117,6 +121,7 @@ class Application(Frame):
 
     def on_submit(self, e=None):
         ''' Query OpenAI Gpt engine and display response in Text widgit'''
+        start = time.time()  # time the Gpt retrival
         querytext = self.query.get("1.0", END)
         if len(querytext) < 4:
             return
@@ -148,6 +153,9 @@ class Application(Frame):
             self.total = response["usage"]["total_tokens"]
             self.prompt = response["usage"]["prompt_tokens"]
             # display response text
+            if MyTime == "1":
+                self.elapsed = (time.time() - start)
+                output = f"elapsed time: {round(self.elapsed, 5)}\n-----" + output
             self.txt.delete("1.0", END)
             self.txt.insert("1.0", output)
         except Exception as e:
@@ -184,9 +192,13 @@ class Application(Frame):
         if qury == "" or resp == "":  # make sure there is a query present
             return
         try:
+            msg = "\ncompletion tokens: " + str(self.completion) + \
+                  "\ntotal tokens: " + str(self.total) + \
+                  "\nprompt tokens: " + str(self.prompt) + "\n-----\n"
             with open(MyPath, "a") as fout:
                 fout.write(str(now.strftime("%Y-%m-%d %H:%M\n")))
-                fout.write(qury + "\n-----\n")
+                fout.write(qury + "\n----- " + MyModel)
+                fout.write(msg)
                 fout.write(resp.strip() + "\n----------------\n\n")
         except Exception as e:
             messagebox.showerror("Save Query Problem", e)
@@ -215,7 +227,7 @@ class Application(Frame):
         self.query.delete("1.0", END)
 
 
-    def options(self):
+    def options(self, e=None):
         # os.system("python3 gptopt.py") # not work well with Windows
         subprocess.Popen([PY, "gptopt.py"])
 
@@ -224,8 +236,30 @@ class Application(Frame):
         msg = "text length: " + str(self.length) + \
               "\ncompletion tokens: " + str(self.completion) + \
               "\ntotal tokens: " + str(self.total) + \
-              "\nprompt tokens: " + str(self.prompt)
+              "\nprompt tokens: " + str(self.prompt) + \
+              "\nResponse Time Elapsed: " + str(self.elapsed)
         messagebox.showinfo("GptGUI Response Tokens", msg)
+
+    def on_toggle_time(self, e=None):
+        global MyTime
+        if MyTime == "1":
+            MyTime = "0"
+        else:
+            MyTime = "1"
+        messagebox.showinfo("Toggle Time Elapsed Show",
+                            "Set to " + MyTime + "       ")
+
+    def on_kb_help(self, e=None):
+        msg = '''
+<Control-t> View response metrics\n
+<Control-m> Toggle elapsed time in output\n
+<Control-h> This HotKey help\n
+<Control-k> Set Options (Button)\n
+<Control-q> Close Program (Button)\n
+<Control-s> Save output (Button)\n
+<Control-g> Submit Query (Button)\n
+        '''
+        messagebox.showinfo("Hot Keys Help", msg)
 
 
 
@@ -256,11 +290,14 @@ MyModel = config['Main']['engine']
 MyTemp = config['Main']['temperature']
 MyTokens = config['Main']['tokens']
 MyKey = config['Main']['gptkey']  # can be actual key or ENV var.
+MyTime = config['Main']['showtime']
 if len(MyKey) < 16:
     MyKey = os.environ.get(MyKey)  # Using ENV var instead of actual key string.
 
+
 # define main window
-root = Window("GptGUI (OpenAI)", MyTheme, iconphoto="icon.png")
+MyTitle = "GptGUI (OpenAI) " + MyModel + " " + str(MyTokens) + " " + str(MyTemp)
+root = Window(MyTitle, MyTheme, iconphoto="icon.png")
 
 # change working directory to path for this file
 p = os.path.realpath(__file__)

@@ -51,6 +51,9 @@ class Application(Frame):
         lbl = Label(self, text='Gpt Key')
         lbl.grid(row=10, column=1, sticky='e', pady=4, padx=4)
 
+        lbl = Label(self, text='Time Elapsed')
+        lbl.grid(row=11, column=1, sticky='e', pady=4, padx=4)
+
         self.vent_theme = StringVar()
         ent_theme = Combobox(self, textvariable=self.vent_theme, width=10)
         ent_theme['values'] = ('darkly', 'superhero', 'solar', 'cyborg', 'sandstone', 'yeti', 'pulse')
@@ -80,7 +83,11 @@ class Application(Frame):
 
         self.vcmbo_model = StringVar()
         cmbo_model = Combobox(self, textvariable=self.vcmbo_model, width=15)
-        cmbo_model['values'] = ('text-davinci-003', 'text-curie-001', 'text-babbage-001', 'text-ada-001')
+        cmbo_model['values'] = ('text-davinci-003',
+                                'text-davinci-002',
+                                'text-curie-001',
+                                'text-babbage-001',
+                                'text-ada-001')
         # COMBO.bind('<<ComboboxSelected>>', self.ONCOMBOSELECT)
         # ent_model.current(0)
         cmbo_model.grid(row=7, column=2, sticky='w', pady=4, padx=4)
@@ -101,6 +108,10 @@ class Application(Frame):
         ent_gptkey = Entry(self, textvariable=self.vent_gptkey, width=30)
         ent_gptkey.grid(row=10, column=2, sticky='w', pady=4, padx=4)
 
+        self.vcb = IntVar()
+        cb = Checkbutton(self, variable=self.vcb, text='Check to show in output')
+        cb.grid(row=11, column=2, sticky=W, padx=5, pady=5)
+
         btn_path = Button(self, text='Browse', command=self.browse_path)
         btn_path.grid(row=2, column=3, pady=4, padx=4)
 
@@ -111,7 +122,7 @@ class Application(Frame):
         btn_gfont.grid(row=5, column=3, pady=4, padx=4)
 
         btn_close = Button(self, text='Save & Close', command=self.on_close)
-        btn_close.grid(row=11, column=2, pady=4, padx=4)
+        btn_close.grid(row=12, column=2, pady=4, padx=4)
 
         # set initial field values from ini file
         self.vent_theme.set(MyTheme)
@@ -124,6 +135,7 @@ class Application(Frame):
         self.vcmbo_model.set(MyModel)
         self.vcmbo_temp.set(MyTemp)
         self.vent_token.set(MyTokens)
+        self.vcb.set(MyTime)
 
 
     def browse_path(self):
@@ -160,6 +172,7 @@ class Application(Frame):
         config['Main']['engine'] = self.vcmbo_model.get()
         config['Main']['temperature'] = self.vcmbo_temp.get()
         config['Main']['tokens'] = self.vent_token.get()
+        config['Main']['showtime'] = str(self.vcb.get())
 
         with open('gptgui.ini', 'w') as configfile:
             config.write(configfile)
@@ -187,6 +200,7 @@ MyModel = config['Main']['engine']
 MyTemp = config['Main']['temperature']
 MyTokens = config['Main']['tokens']
 MyKey = config['Main']['gptkey']
+MyTime = config['Main']['showtime']
 
 # change working directory to path for this file
 p = os.path.realpath(__file__)
