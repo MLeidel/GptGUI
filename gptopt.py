@@ -1,7 +1,5 @@
 '''
 code file: gptopt.py
-comments:
-    tkauto generated
 '''
 import os, sys
 import configparser
@@ -54,10 +52,26 @@ class Application(Frame):
         lbl = Label(self, text='Time Elapsed')
         lbl.grid(row=11, column=1, sticky='e', pady=4, padx=4)
 
+        lbl = Label(self, text='Auto Save')
+        lbl.grid(row=12, column=1, sticky='e', pady=4, padx=4)
+
         self.vent_theme = StringVar()
         ent_theme = Combobox(self, textvariable=self.vent_theme, width=10)
-        ent_theme['values'] = ('darkly', 'superhero', 'solar', 'cyborg', 'sandstone', 'yeti', 'pulse')
-        # COMBO.bind('<<ComboboxSelected>>', self.ONCOMBOSELECT)
+        ent_theme['values'] = ('darkly',
+                               'superhero',
+                               'solar',
+                               'cyborg',
+                               'sandstone',
+                               'yeti',
+                               'pulse',
+                               'cosmo',
+                               'flatly',
+                               'litera',
+                               'minty',
+                               'lumen',
+                               'journal',
+                               'simplex',
+                               'cerculean')
         ent_theme.current(0)
         ent_theme.grid(row=1, column=2, sticky='w', pady=4, padx=4)
 
@@ -112,6 +126,10 @@ class Application(Frame):
         cb = Checkbutton(self, variable=self.vcb, text='Check to show in output')
         cb.grid(row=11, column=2, sticky=W, padx=5, pady=5)
 
+        self.vcv = IntVar()
+        cb = Checkbutton(self, variable=self.vcv, text='Check to turn on')
+        cb.grid(row=12, column=2, sticky=W, padx=5, pady=5)
+
         btn_path = Button(self, text='Browse', command=self.browse_path)
         btn_path.grid(row=2, column=3, pady=4, padx=4)
 
@@ -122,7 +140,7 @@ class Application(Frame):
         btn_gfont.grid(row=5, column=3, pady=4, padx=4)
 
         btn_close = Button(self, text='Save & Close', command=self.on_close)
-        btn_close.grid(row=12, column=2, pady=4, padx=4)
+        btn_close.grid(row=13, column=2, pady=4, padx=4)
 
         # set initial field values from ini file
         self.vent_theme.set(MyTheme)
@@ -136,6 +154,7 @@ class Application(Frame):
         self.vcmbo_temp.set(MyTemp)
         self.vent_token.set(MyTokens)
         self.vcb.set(MyTime)
+        self.vcv.set(MySave)
 
 
     def browse_path(self):
@@ -173,6 +192,7 @@ class Application(Frame):
         config['Main']['temperature'] = self.vcmbo_temp.get()
         config['Main']['tokens'] = self.vent_token.get()
         config['Main']['showtime'] = str(self.vcb.get())
+        config['Main']['autosave'] = str(self.vcv.get())
 
         with open('gptgui.ini', 'w') as configfile:
             config.write(configfile)
@@ -201,6 +221,7 @@ MyTemp = config['Main']['temperature']
 MyTokens = config['Main']['tokens']
 MyKey = config['Main']['gptkey']
 MyTime = config['Main']['showtime']
+MySave = config['Main']['autosave']
 
 # change working directory to path for this file
 p = os.path.realpath(__file__)

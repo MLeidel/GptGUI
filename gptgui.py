@@ -3,6 +3,7 @@ code file: gptgui.py
 date: 1-31-2023
 date: 2-07-2023 -> added result tokens messagebox
 date: 2-08-2023 -> added time elapsed and title specs
+date: 2-11-2023 -> added auto-save and context menus
 '''
 import os
 import time
@@ -98,6 +99,28 @@ class Application(Frame):
         cls.grid(row=4, column=2, columnspan=2, sticky='e',
                  pady=(5,0), padx=5)
 
+        # Popup menus - for self.query Text widgets
+        self.popup_query = Menu(tearoff=0, title="title")
+        self.popup_query.add_command(label="Copy",
+                               command=lambda: self.popquery(1))
+        self.popup_query.add_command(label="Paste",
+                               command=lambda: self.popquery(2))
+        self.popup_query.add_separator()
+        self.popup_query.add_command(label="Select All",
+                                     command=lambda: self.popquery(3))
+        self.query.bind("<Button-3>", self.do_pop_query)
+        # Popup menus - for self.txt Text widgets
+        self.popup_txt = Menu(tearoff=0, title="title")
+        self.popup_txt.add_command(label="Copy",
+                               command=lambda: self.poptxt(1))
+        self.popup_txt.add_command(label="Paste",
+                               command=lambda: self.poptxt(2))
+        self.popup_txt.add_separator()
+        self.popup_txt.add_command(label="Select All",
+                                     command=lambda: self.poptxt(3))
+        self.txt.bind("<Button-3>", self.do_pop_txt)
+
+
         # Bindings
         root.bind("<Control-t>", self.show_tokens)  # Show result tokens in title
         root.bind("<Control-m>", self.on_toggle_time)  # time elapsed toggle
@@ -115,6 +138,8 @@ class Application(Frame):
                 text="Remove all saved query responses",
                 bootstyle=(INFO))
 
+        if MySave == "1":
+            self.save.config(text="Auto Save", bootstyle="default-outline")
         self.query.focus_set()
 
 #----------------------------------------------------------------------
@@ -125,8 +150,9 @@ class Application(Frame):
         querytext = self.query.get("1.0", END)
         if len(querytext) < 4:
             return
-        self.save.configure(bootstyle=DEFAULT) # new - not been saved
-        self.Saved = False
+        if MySave == "0":
+            self.save.configure(bootstyle=DEFAULT) # new - not been saved
+            self.Saved = False
         # get the Gpt key from the ini value
         try:
             openai.api_key = MyKey
@@ -158,6 +184,9 @@ class Application(Frame):
                 output = f"elapsed time: {round(self.elapsed, 5)}\n-----" + output
             self.txt.delete("1.0", END)
             self.txt.insert("1.0", output)
+            # on Auto Save do the save
+            if MySave == "1":
+                self.on_save_file()
         except Exception as e:
             messagebox.showerror("Problems", e)
 
@@ -202,9 +231,11 @@ class Application(Frame):
                 fout.write(resp.strip() + "\n----------------\n\n")
         except Exception as e:
             messagebox.showerror("Save Query Problem", e)
-        # indicate that a "save" has processed
-        self.save.configure(bootstyle="default-outline")
-        self.Saved = True
+
+        if MySave == "0":  # Auto Save is off
+            # indicate that a "save" has processed
+            self.save.configure(bootstyle="default-outline")
+            self.Saved = True
 
 
     def on_view_file(self):
@@ -246,13 +277,14 @@ class Application(Frame):
             MyTime = "0"
         else:
             MyTime = "1"
-        messagebox.showinfo("Toggle Time Elapsed Show",
-                            "Set to " + MyTime + "       ")
+        messagebox.showinfo("Toggle Show Elapsed Time",
+                            "    Set to " + MyTime + "       ")
 
     def on_kb_help(self, e=None):
         msg = '''
 <Control-t> View response metrics\n
 <Control-m> Toggle elapsed time in output\n
+            (Does not effect Options flag)
 <Control-h> This HotKey help\n
 <Control-k> Set Options (Button)\n
 <Control-q> Close Program (Button)\n
@@ -262,6 +294,51 @@ class Application(Frame):
         messagebox.showinfo("Hot Keys Help", msg)
 
 
+    def do_pop_query(self, event):
+        ''' handles right-click for context menu '''
+        try:
+            self.popup_query.tk_popup(event.x_root,
+                                event.y_root, 0)
+        except:
+            self.popup_query.grab_release()
+
+    def do_pop_txt(self, event):
+        ''' handles right-click for context menu '''
+        try:
+            self.popup_txt.tk_popup(event.x_root,
+                                event.y_root, 0)
+        except:
+            self.popup_txt.grab_release()
+
+    def popquery(self, n):
+        ''' Routes query Text context menu actions '''
+        if n == 1:  # Copy
+            root.clipboard_clear()  # clear clipboard contents
+            root.clipboard_append(self.query.selection_get())  # append new value to clipbaord
+        elif n == 2:  # Paste
+            inx = self.query.index(INSERT)
+            self.query.insert(inx, root.clipboard_get())
+        else:  # Select All
+            self.query.focus()
+            self.query.tag_add(SEL, '1.0', END)
+            self.query.mark_set(INSERT, '1.0')
+            self.query.see(INSERT)
+
+    def poptxt(self, n):
+        ''' Routes txt Text context menu actions '''
+        if n == 1:  # Copy
+            root.clipboard_clear()  # clear clipboard contents
+            root.clipboard_append(self.txt.selection_get())  # append new value to clipbaord
+        elif n == 2:  # Paste
+            inx = self.txt.index(INSERT)
+            self.txt.insert(inx, root.clipboard_get())
+        else:  # Select All
+            self.txt.focus()
+            self.txt.tag_add(SEL, '1.0', END)
+            self.txt.mark_set(INSERT, '1.0')
+            self.txt.see(INSERT)
+
+#------------------------------------------------------------
 
 # SAVE GEOMETRY INFO AND EXIT
 def save_location(e=None):
@@ -291,6 +368,7 @@ MyTemp = config['Main']['temperature']
 MyTokens = config['Main']['tokens']
 MyKey = config['Main']['gptkey']  # can be actual key or ENV var.
 MyTime = config['Main']['showtime']
+MySave = config['Main']['autosave']
 if len(MyKey) < 16:
     MyKey = os.environ.get(MyKey)  # Using ENV var instead of actual key string.
 
@@ -318,3 +396,37 @@ Sizegrip(root).place(rely=1.0, relx=1.0, x=0, y=0, anchor='se')
 Application(root)
 
 root.mainloop()
+
+
+# def do_popup1(event):
+#     ''' handles right-click for context menu '''
+#     try:
+#         popup_code.tk_popup(event.x_root,
+#                             event.y_root)
+#     finally:
+#         popup_code.grab_release()
+
+# def pop1func(n):
+#     ''' Routes context menu actions '''
+#     if n == 1:  # Copy
+#         root.clipboard_clear()  # clear clipboard contents
+#         root.clipboard_append(code.selection_get())  # append new value to clipbaord
+#     elif n == 2:  # Paste
+#         inx = code.index(INSERT)
+#         code.insert(inx, root.clipboard_get())
+#     else:  # Select All
+#         code.focus()
+#         code.tag_add(SEL, '1.0', END)
+#         code.mark_set(INSERT, '1.0')
+#         code.see(INSERT)
+
+# # Popup - code Text widget is target
+# popup_code = Menu(tearoff=0, title="title")
+# popup_code.add_command(label="Copy",
+#                        command=lambda: pop1func(1))
+# popup_code.add_command(label="Paste",
+#                        command=lambda: pop1func(2))
+# popup_code.add_separator()
+# popup_code.add_command(label="Select All", command=lambda: pop1func(3))
+# code.bind("<Button-3>", do_popup1)
+
