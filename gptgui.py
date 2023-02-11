@@ -396,37 +396,3 @@ Sizegrip(root).place(rely=1.0, relx=1.0, x=0, y=0, anchor='se')
 Application(root)
 
 root.mainloop()
-
-
-# def do_popup1(event):
-#     ''' handles right-click for context menu '''
-#     try:
-#         popup_code.tk_popup(event.x_root,
-#                             event.y_root)
-#     finally:
-#         popup_code.grab_release()
-
-# def pop1func(n):
-#     ''' Routes context menu actions '''
-#     if n == 1:  # Copy
-#         root.clipboard_clear()  # clear clipboard contents
-#         root.clipboard_append(code.selection_get())  # append new value to clipbaord
-#     elif n == 2:  # Paste
-#         inx = code.index(INSERT)
-#         code.insert(inx, root.clipboard_get())
-#     else:  # Select All
-#         code.focus()
-#         code.tag_add(SEL, '1.0', END)
-#         code.mark_set(INSERT, '1.0')
-#         code.see(INSERT)
-
-# # Popup - code Text widget is target
-# popup_code = Menu(tearoff=0, title="title")
-# popup_code.add_command(label="Copy",
-#                        command=lambda: pop1func(1))
-# popup_code.add_command(label="Paste",
-#                        command=lambda: pop1func(2))
-# popup_code.add_separator()
-# popup_code.add_command(label="Select All", command=lambda: pop1func(3))
-# code.bind("<Button-3>", do_popup1)
-
