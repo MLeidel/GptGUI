@@ -1,0 +1,3 @@
+configparser
+ttkbootstrap
+openai

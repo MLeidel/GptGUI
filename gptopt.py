@@ -22,7 +22,7 @@ class Application(Frame):
         lbl = Label(self, text='Theme')
         lbl.grid(row=1, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Path')
+        lbl = Label(self, text='Save File Path')
         lbl.grid(row=2, column=1, sticky='e', pady=4, padx=4)
 
         lbl = Label(self, text='Font Query Family')

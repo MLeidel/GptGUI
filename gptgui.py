@@ -6,6 +6,7 @@ date: 2-08-2023 -> added time elapsed and title specs
 date: 2-11-2023 -> added auto-save and context menus
 '''
 import os
+import sys
 import time
 import configparser
 import subprocess
@@ -141,6 +142,14 @@ class Application(Frame):
         if MySave == "1":
             self.save.config(text="Auto Save", bootstyle="default-outline")
         self.query.focus_set()
+
+#       check if query entered on command line
+#       if it query entered on command line
+#       then execute it immediately
+        if len(sys.argv) > 1:
+            query = " ".join(sys.argv[1:])
+            self.query.insert("1.0", query)
+            self.on_submit()
 
 #----------------------------------------------------------------------
 

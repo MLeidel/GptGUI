@@ -42,7 +42,7 @@ Then click the _Save & Close_ button.
 
 ---
 
-### gptgui.ini file
+### gptgui.ini
 
 The options are stored in a plain text file called _gptopt.ini_.  
 If you prefer you could change the settings with a text editor.
@@ -65,13 +65,14 @@ The buttons:
 - Clear
 > Clears the query box and the response area.
 - Save
-> Save the response area with the query into your _myqueries.txt_ file
-that was set up in gptgui.ini.
+> Save the response from Gpt, with the query, into your _save_ file
+that you set up in gptgui.ini. Also you can turn on _Auto Save_ in
+the options which automatically saves each query/response.
 - View
-> Displays the _myqueries.txt_ file you set up in gptgui.ini.
+> Displays the _save_ file you set up in gptgui.ini.
 You cannot edit the file hear.
 - Purge
-> Clears the contens of the _myqueries.txt_ file.
+> Clears the contens of the _save_ file.
 - Options
 > launches the Options editor.
 
