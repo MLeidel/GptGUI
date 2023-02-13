@@ -55,6 +55,9 @@ class Application(Frame):
         lbl = Label(self, text='Auto Save')
         lbl.grid(row=12, column=1, sticky='e', pady=4, padx=4)
 
+        lbl = Label(self, text='Top Frame Size')
+        lbl.grid(row=13, column=1, sticky='e', pady=4, padx=4)
+
         self.vent_theme = StringVar()
         ent_theme = Combobox(self, textvariable=self.vent_theme, width=10)
         ent_theme['values'] = ('darkly',
@@ -130,6 +133,10 @@ class Application(Frame):
         cb = Checkbutton(self, variable=self.vcv, text='Check to turn on')
         cb.grid(row=12, column=2, sticky=W, padx=5, pady=5)
 
+        self.vent_size = StringVar()
+        ent_size = Entry(self, textvariable=self.vent_size, width=4)
+        ent_size.grid(row=13, column=2, sticky='w', pady=4, padx=4)
+
         btn_path = Button(self, text='Browse', command=self.browse_path)
         btn_path.grid(row=2, column=3, pady=4, padx=4)
 
@@ -140,7 +147,7 @@ class Application(Frame):
         btn_gfont.grid(row=5, column=3, pady=4, padx=4)
 
         btn_close = Button(self, text='Save & Close', command=self.on_close)
-        btn_close.grid(row=13, column=2, pady=4, padx=4)
+        btn_close.grid(row=16, column=2, pady=4, padx=4)
 
         # set initial field values from ini file
         self.vent_theme.set(MyTheme)
@@ -155,6 +162,7 @@ class Application(Frame):
         self.vent_token.set(MyTokens)
         self.vcb.set(MyTime)
         self.vcv.set(MySave)
+        self.vent_size.set(MySize)
 
 
     def browse_path(self):
@@ -193,6 +201,7 @@ class Application(Frame):
         config['Main']['tokens'] = self.vent_token.get()
         config['Main']['showtime'] = str(self.vcb.get())
         config['Main']['autosave'] = str(self.vcv.get())
+        config['Main']['top_frame'] = str(self.vent_size.get())
 
         with open('gptgui.ini', 'w') as configfile:
             config.write(configfile)
@@ -222,6 +231,7 @@ MyTokens = config['Main']['tokens']
 MyKey = config['Main']['gptkey']
 MyTime = config['Main']['showtime']
 MySave = config['Main']['autosave']
+MySize = config['Main']['top_frame']
 
 # change working directory to path for this file
 p = os.path.realpath(__file__)

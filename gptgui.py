@@ -18,6 +18,7 @@ from ttkbootstrap.tooltip import ToolTip
 import datetime
 import openai
 
+# for subprocess to exec gptopt.py
 PY = "python3"  # Linux
 # PY = "pythonw"  # Windows
 
@@ -43,7 +44,7 @@ class Application(Frame):
         self.query.config(wrap="word", # wrap=NONE
                           undo=True, # Tk 8.4
                           width=50,
-                          height=5,
+                          height=TOPFRAME,
                           padx=5, # inner margin
                           #insertbackground='#000',   # cursor color
                           tabs=(efont.measure(' ' * 4),))
@@ -107,8 +108,13 @@ class Application(Frame):
         self.popup_query.add_command(label="Paste",
                                command=lambda: self.popquery(2))
         self.popup_query.add_separator()
-        self.popup_query.add_command(label="Select All",
+        self.popup_query.add_command(label="Copy All",
                                      command=lambda: self.popquery(3))
+        self.popup_query.add_separator()
+        self.popup_query.add_command(label="Larger",
+                                     command=lambda: self.popquery(4))
+        self.popup_query.add_command(label="Smaller",
+                                     command=lambda: self.popquery(5))
         self.query.bind("<Button-3>", self.do_pop_query)
         # Popup menus - for self.txt Text widgets
         self.popup_txt = Menu(tearoff=0, title="title")
@@ -117,7 +123,7 @@ class Application(Frame):
         self.popup_txt.add_command(label="Paste",
                                command=lambda: self.poptxt(2))
         self.popup_txt.add_separator()
-        self.popup_txt.add_command(label="Select All",
+        self.popup_txt.add_command(label="Copy All",
                                      command=lambda: self.poptxt(3))
         self.txt.bind("<Button-3>", self.do_pop_txt)
 
@@ -321,17 +327,33 @@ class Application(Frame):
 
     def popquery(self, n):
         ''' Routes query Text context menu actions '''
+        global TOPFRAME
         if n == 1:  # Copy
             root.clipboard_clear()  # clear clipboard contents
-            root.clipboard_append(self.query.selection_get())  # append new value to clipbaord
+            if self.query.tag_ranges("sel"):
+                root.clipboard_append(self.query.selection_get())  # append new value to clipbaord
         elif n == 2:  # Paste
             inx = self.query.index(INSERT)
-            self.query.insert(inx, root.clipboard_get())
-        else:  # Select All
+            try:
+                self.query.insert(inx, root.clipboard_get())
+            except Exception as e:
+                return
+        elif n == 3:  # Copy All
             self.query.focus()
             self.query.tag_add(SEL, '1.0', END)
             self.query.mark_set(INSERT, '1.0')
             self.query.see(INSERT)
+            root.clipboard_clear()  # clear clipboard contents
+            if self.query.tag_ranges("sel"):  # append new value to clipbaord
+                root.clipboard_append(self.query.selection_get())
+                self.query.tag_remove(SEL, "1.0", END)
+        elif n == 4:  # larger
+            TOPFRAME += 2
+            self.query.config(height=TOPFRAME)
+        elif n == 5:  # smaller
+            if TOPFRAME > 3:
+                TOPFRAME -= 2
+                self.query.config(height=TOPFRAME)
 
     def poptxt(self, n):
         ''' Routes txt Text context menu actions '''
@@ -346,6 +368,10 @@ class Application(Frame):
             self.txt.tag_add(SEL, '1.0', END)
             self.txt.mark_set(INSERT, '1.0')
             self.txt.see(INSERT)
+            root.clipboard_clear()  # clear clipboard contents
+            if self.txt.tag_ranges("sel"):  # append new value to clipbaord
+                root.clipboard_append(self.txt.selection_get())
+                self.txt.tag_remove(SEL, "1.0", END)
 
 #------------------------------------------------------------
 
@@ -378,6 +404,7 @@ MyTokens = config['Main']['tokens']
 MyKey = config['Main']['gptkey']  # can be actual key or ENV var.
 MyTime = config['Main']['showtime']
 MySave = config['Main']['autosave']
+TOPFRAME = int(config['Main']['top_frame'])
 if len(MyKey) < 16:
     MyKey = os.environ.get(MyKey)  # Using ENV var instead of actual key string.
 
