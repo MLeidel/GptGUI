@@ -178,14 +178,24 @@ class Application(Frame):
         # may take some time
         # things are locked up until response returns
         try:
-            response = openai.Completion.create(
-            model=MyModel,
-            prompt=querytext.strip(),
-            temperature=float(MyTemp),
-            max_tokens=int(MyTokens),
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0)
+            if MyModel == "text-davinci-edit-001":
+                print("Edit model")
+                response = openai.Edit.create(
+                    model="text-davinci-edit-001",
+                    input=self.txt.get("1.0", END),
+                    instruction=querytext.strip(),
+                    temperature=0.7,
+                    top_p=1)
+            else:
+                print("Completion model")
+                response = openai.Completion.create(
+                    model=MyModel,
+                    prompt=querytext.strip(),
+                    temperature=float(MyTemp),
+                    max_tokens=int(MyTokens),
+                    top_p=1,
+                    frequency_penalty=0,
+                    presence_penalty=0)
             # display Gpt response in Text widget
             output = response["choices"][0]["text"]
             # collect response token info
@@ -194,7 +204,7 @@ class Application(Frame):
             self.total = response["usage"]["total_tokens"]
             self.prompt = response["usage"]["prompt_tokens"]
             # display response text
-            if MyTime == "1":
+            if MyTime == "1" and MyModel != "text-davinci-edit-001":
                 self.elapsed = (time.time() - start)
                 output = f"elapsed time: {round(self.elapsed, 5)}\n-----" + output
             self.txt.delete("1.0", END)
@@ -378,9 +388,10 @@ class Application(Frame):
 # SAVE GEOMETRY INFO AND EXIT
 def save_location(e=None):
     ''' executes at WM_DELETE_WINDOW event - see below '''
-    if messagebox.askokcancel('GptGUI',
-                           'Did you want to close the app?') is False:
-        return
+    if e is None:  # ctrl-q avoids this message
+        if messagebox.askokcancel('GptGUI',
+                                  'Did you want to close the app?') is False:
+            return
     with open("winfo", "w") as fout:
         fout.write(root.geometry())
     root.destroy()

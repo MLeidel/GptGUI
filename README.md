@@ -26,9 +26,6 @@ an API Key__.
 There is no cost to do so.
 ___
 
-### Your Gpt API key will look someting like this:
->sk-RTcSmEReCJGAPzWYYwsST3BlbkTJH83dSaX01BusOGmMmHi2
-
 After starting the app the first time click the _Options_
 button.
 

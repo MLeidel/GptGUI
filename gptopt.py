@@ -99,9 +99,11 @@ class Application(Frame):
         ent_fgsiz.grid(row=6, column=2, sticky='w', pady=4, padx=4)
 
         self.vcmbo_model = StringVar()
-        cmbo_model = Combobox(self, textvariable=self.vcmbo_model, width=15)
+        cmbo_model = Combobox(self, textvariable=self.vcmbo_model, width=20)
         cmbo_model['values'] = ('text-davinci-003',
                                 'text-davinci-002',
+                                'code-davinci-002',
+                                'text-davinci-edit-001',
                                 'text-curie-001',
                                 'text-babbage-001',
                                 'text-ada-001')
