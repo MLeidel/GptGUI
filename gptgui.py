@@ -97,7 +97,7 @@ class Application(Frame):
 
        # END BUTTON FRAME
 
-        cls = Button(self, text='Close', command=save_location)
+        cls = Button(self, text='Close', command=self.exit_program)
         cls.grid(row=4, column=2, columnspan=2, sticky='e',
                  pady=(5,0), padx=5)
 
@@ -133,7 +133,7 @@ class Application(Frame):
         root.bind("<Control-m>", self.on_toggle_time)  # time elapsed toggle
         root.bind("<Control-h>", self.on_kb_help)  # show hotkey help
         root.bind("<Control-k>", self.options)  # Options button
-        root.bind("<Control-q>", save_location)  # Close button
+        root.bind("<Control-q>", self.exit_program)  # Close button
         root.bind("<Control-s>", self.on_save_file)  # Save button
         root.bind("<Control-g>", self.on_submit)  # Submit Query button
 
@@ -311,8 +311,8 @@ class Application(Frame):
 <Control-m> Toggle elapsed time in output\n
             (Does not effect Options flag)
 <Control-h> This HotKey help\n
+<Control-q> Close Program No Prompt\n
 <Control-k> Set Options (Button)\n
-<Control-q> Close Program (Button)\n
 <Control-s> Save output (Button)\n
 <Control-g> Submit Query (Button)\n
         '''
@@ -383,15 +383,30 @@ class Application(Frame):
                 root.clipboard_append(self.txt.selection_get())
                 self.txt.tag_remove(SEL, "1.0", END)
 
+    def exit_program(self, e=None):
+        ''' Only exit program without prompt if
+            1. Ctrl-q was hit
+            OR
+            2. Both Text frames are empty '''
+        resp = self.txt.get("1.0", END).strip()
+        qury = self.query.get("1.0", END).strip()
+        if resp == "" and qury == "":
+            save_location()
+            sys.exit()
+        if e is None:  # ctrl-q avoids this message
+            if messagebox.askokcancel('GptGUI',
+                                      'Did you want to close the app?') is False:
+                return
+        save_location()
+
 #------------------------------------------------------------
 
 # SAVE GEOMETRY INFO AND EXIT
 def save_location(e=None):
-    ''' executes at WM_DELETE_WINDOW event - see below '''
-    if e is None:  # ctrl-q avoids this message
-        if messagebox.askokcancel('GptGUI',
-                                  'Did you want to close the app?') is False:
-            return
+    ''' executes at WM_DELETE_WINDOW event - see below
+        Also called from self.exit_program.
+        Save window geometry before destruction
+    '''
     with open("winfo", "w") as fout:
         fout.write(root.geometry())
     root.destroy()
