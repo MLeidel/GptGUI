@@ -83,5 +83,14 @@ the options which automatically saves each query/response.
 
 ![Tokens](images/gptkeys.png "Hot Keys")
 
+---
+
+### How to use the code-davinci-002	Codex model
+
+Read about this here: https://platform.openai.com/docs/models/codex
+
+For GptGUI the top frame acts as the _instructions_ frame and the bottom
+frame acts as the _input_ frame.
+
 ----
 END

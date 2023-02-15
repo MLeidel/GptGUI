@@ -4,6 +4,7 @@ date: 1-31-2023
 date: 2-07-2023 -> added result tokens messagebox
 date: 2-08-2023 -> added time elapsed and title specs
 date: 2-11-2023 -> added auto-save and context menus
+date: 2-14-2023 -> changed: Options handling
 '''
 import os
 import sys
@@ -284,8 +285,14 @@ class Application(Frame):
 
 
     def options(self, e=None):
-        # os.system("python3 gptopt.py") # not work well with Windows
+        ''' Launch Options program and exit this program '''
+        if e is None:  # ctrl-q avoids this message
+            if messagebox.askokcancel('GptGUI',
+                'Close this to launch Options') is False:
+                return
         subprocess.Popen([PY, "gptopt.py"])
+        save_location()
+
 
     def show_tokens(self, e=None):
         ''' show response tokens '''
@@ -308,7 +315,7 @@ class Application(Frame):
     def on_kb_help(self, e=None):
         msg = '''
 <Control-t> View response metrics\n
-<Control-m> Toggle elapsed time in output\n
+<Control-m> Toggle show elapsed time in output\n
             (Does not effect Options flag)
 <Control-h> This HotKey help\n
 <Control-q> Close Program No Prompt\n

@@ -3,12 +3,19 @@ code file: gptopt.py
 '''
 import os, sys
 import configparser
+import subprocess
 from tkinter.font import Font
 from ttkbootstrap import *
 from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Querybox
 from tkinter import filedialog
 from tkinter import messagebox
+
+## for subprocess to exec gptopt.py
+PY = "python3"  # Linux
+GPTGUI = "gptgui.py"
+# PY = "pythonw"  # Windows
+# GPTGUI = "gptgui.pyw"
 
 class Application(Frame):
     ''' main class docstring '''
@@ -207,8 +214,10 @@ class Application(Frame):
 
         with open('gptgui.ini', 'w') as configfile:
             config.write(configfile)
-        messagebox.showinfo("GptGUI Options",
-                            "You will need to restart GptGUI before changes can take effect.")
+        ret = messagebox.askokcancel("Configuration Saved",
+                                     "Re-launch GptGUI?")
+        if ret is True:
+            subprocess.Popen([PY, GPTGUI])
         root.destroy()
 
     # def eventHandler(self):
