@@ -318,6 +318,7 @@ class Application(Frame):
         messagebox.showinfo("GptGUI Response Tokens", msg)
 
     def on_toggle_time(self, e=None):
+        ''' Toggles the showing of the response time '''
         global MyTime
         if MyTime == "1":
             MyTime = "0"
@@ -327,6 +328,7 @@ class Application(Frame):
                             "    Set to " + MyTime + "       ")
 
     def on_kb_help(self, e=None):
+        ''' display hot keys message '''
         msg = '''
 <Ctrl-t> View response metrics\n
 <Ctrl-m> Temporarily Toggle\n
