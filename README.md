@@ -81,7 +81,17 @@ the options which automatically saves each query/response.
 
 ## Hot Keys
 
-![Tokens](images/gptkeys.png "Hot Keys")
+| key | action |
+| :--- | :--- |
+|__Ctrl-t__| View response metrics|
+|__Ctrl-m__| Toggle show-elapsed-time temporarily|
+|__Ctrl-h__| This HotKey help|
+|__Ctrl-q__| Close Program No Prompt|
+|__Ctrl-k__| Set Options (Button)|
+|__Ctrl-s__| Save output (Button)|
+|__Ctrl-g__| Submit Query (Button)|
+|__Ctrl-Enter__ | Submit Query & Append to existing text|
+
 
 ---
 

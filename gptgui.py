@@ -5,6 +5,7 @@ date: 2-07-2023 -> added result tokens messagebox
 date: 2-08-2023 -> added time elapsed and title specs
 date: 2-11-2023 -> added auto-save and context menus
 date: 2-14-2023 -> changed: Options handling
+date: 2-22-2023 -> Ctrl-Enter to Append response
 '''
 import os
 import sys
@@ -91,7 +92,7 @@ class Application(Frame):
         opts.grid(row=1, column=6, sticky='w',
                    pady=(5, 0), padx=5)
         self.sub = Button(btn_frame,
-                     text='Submit Query',
+                     text='Submit Query (Ctrl-g)',
                      command=self.on_submit, width=35)
         self.sub.grid(row=1, column=7, sticky='w',
                    pady=(5, 0), padx=(20, 0))
@@ -137,6 +138,8 @@ class Application(Frame):
         root.bind("<Control-q>", self.exit_program)  # Close button
         root.bind("<Control-s>", self.on_save_file)  # Save button
         root.bind("<Control-g>", self.on_submit)  # Submit Query button
+        root.bind("<Control-Return>", self.on_submit)  # Submit Query button
+
 
         # ToolTips
         ToolTip(self.query,
@@ -144,6 +147,9 @@ class Application(Frame):
                 bootstyle=(INFO))
         ToolTip(purge,
                 text="Remove all saved query responses",
+                bootstyle=(INFO))
+        ToolTip(self.sub,
+                text="Ctrl-Enter to Append",
                 bootstyle=(INFO))
 
         if MySave == "1":
@@ -162,6 +168,10 @@ class Application(Frame):
 
     def on_submit(self, e=None):
         ''' Query OpenAI Gpt engine and display response in Text widgit'''
+        if e is None:
+            renderStyle = "X"
+        else:
+            renderStyle = e.keysym  # "Return" means append to Output Text
         start = time.time()  # time the Gpt retrival
         querytext = self.query.get("1.0", END)
         if len(querytext) < 4:
@@ -180,7 +190,7 @@ class Application(Frame):
         # things are locked up until response returns
         try:
             if MyModel == "text-davinci-edit-001":
-                print("Edit model")
+                # print("Edit model")
                 response = openai.Edit.create(
                     model="text-davinci-edit-001",
                     input=self.txt.get("1.0", END),
@@ -188,7 +198,7 @@ class Application(Frame):
                     temperature=0.7,
                     top_p=1)
             else:
-                print("Completion model")
+                # print("Completion model")
                 response = openai.Completion.create(
                     model=MyModel,
                     prompt=querytext.strip(),
@@ -208,8 +218,12 @@ class Application(Frame):
             if MyTime == "1" and MyModel != "text-davinci-edit-001":
                 self.elapsed = (time.time() - start)
                 output = f"elapsed time: {round(self.elapsed, 5)}\n-----" + output
-            self.txt.delete("1.0", END)
-            self.txt.insert("1.0", output)
+            if renderStyle != "Return":
+                self.txt.delete("1.0", END)
+                self.txt.insert("1.0", output)
+            else:
+                # self.txt.mark_set(INSERT, END)
+                self.txt.insert(END, output)
             # on Auto Save do the save
             if MySave == "1":
                 self.on_save_file()
@@ -314,14 +328,16 @@ class Application(Frame):
 
     def on_kb_help(self, e=None):
         msg = '''
-<Control-t> View response metrics\n
-<Control-m> Toggle show elapsed time in output\n
-            (Does not effect Options flag)
-<Control-h> This HotKey help\n
-<Control-q> Close Program No Prompt\n
-<Control-k> Set Options (Button)\n
-<Control-s> Save output (Button)\n
-<Control-g> Submit Query (Button)\n
+<Ctrl-t> View response metrics\n
+<Ctrl-m> Temporarily Toggle\n
+    show-elapsed-time\n
+<Ctrl-h> This HotKey help\n
+<Ctrl-q> Close Program\n
+    No Prompt\n
+<Ctrl-k> Set Options (Button)\n
+<Ctrl-s> Save output (Button)\n
+<Ctrl-g> Submit Query (Button)\n
+<Ctrl-Enter> Submit & Append\n
         '''
         messagebox.showinfo("Hot Keys Help", msg)
 
