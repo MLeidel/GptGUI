@@ -1,11 +1,6 @@
 '''
-code file: gptgui.py
-date: 1-31-2023
-date: 2-07-2023 -> added result tokens messagebox
-date: 2-08-2023 -> added time elapsed and title specs
-date: 2-11-2023 -> added auto-save and context menus
-date: 2-14-2023 -> changed: Options handling
-date: 2-22-2023 -> Ctrl-Enter to Append response
+code file: gptgui_35.py
+date: 3-15-2023 add gpt-3.5-turbo
 '''
 import os
 import sys
@@ -189,7 +184,8 @@ class Application(Frame):
         # may take some time
         # things are locked up until response returns
         try:
-            if MyModel == "text-davinci-edit-001":
+            if MyModel == "text-davinci-edit-001" \
+            or MyModel == "gpt-3.5-turbo":
                 # print("Edit model")
                 response = openai.Edit.create(
                     model="text-davinci-edit-001",

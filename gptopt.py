@@ -1,5 +1,6 @@
 '''
 code file: gptopt.py
+3-15-23 - Add gpt-3.5-turbo
 '''
 import os, sys
 import configparser
@@ -107,7 +108,8 @@ class Application(Frame):
 
         self.vcmbo_model = StringVar()
         cmbo_model = Combobox(self, textvariable=self.vcmbo_model, width=20)
-        cmbo_model['values'] = ('text-davinci-003',
+        cmbo_model['values'] = ('gpt-3.5-turbo',
+                                'text-davinci-003',
                                 'text-davinci-002',
                                 'code-davinci-002',
                                 'text-davinci-edit-001',
