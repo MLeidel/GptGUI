@@ -176,16 +176,15 @@ class Application(Frame):
             self.Saved = False
         # get the Gpt key from the ini value
         try:
-            openai.api_key = MyKey
+            openai.api_key = MyKey  # openai API
         except Exception as e:
             messagebox.showerror("Could Not Read Key file",
                        "Did you enter your Gpt Key?")
             return
-        # may take some time
-        # things are locked up until response returns
+
+        # openai API request code
         try:
-            if MyModel == "text-davinci-edit-001" \
-            or MyModel == "gpt-3.5-turbo":
+            if MyModel == "text-davinci-edit-001":
                 # print("Edit model")
                 response = openai.Edit.create(
                     model="text-davinci-edit-001",
@@ -194,7 +193,7 @@ class Application(Frame):
                     temperature=0.7,
                     top_p=1)
             else:
-                # print("Completion model")
+                # print("Completion models")
                 response = openai.Completion.create(
                     model=MyModel,
                     prompt=querytext.strip(),
@@ -203,6 +202,7 @@ class Application(Frame):
                     top_p=1,
                     frequency_penalty=0,
                     presence_penalty=0)
+
             # display Gpt response in Text widget
             output = response["choices"][0]["text"]
             # collect response token info
