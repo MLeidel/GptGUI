@@ -200,9 +200,11 @@ class Application(Frame):
             elif MyModel == "gpt-3.5-turbo":
                 response = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
+                    max_tokens=int(MyTokens),
+                    temperature=float(MyTemp),
                     messages = [{"role": "user", "content" : querytext.strip()}]
                 )
-                print("gpt-3.5-turbo")
+                # print("gpt-3.5-turbo")
             else:
                 # print("Completion models")
                 response = openai.Completion.create(
