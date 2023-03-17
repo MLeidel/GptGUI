@@ -159,6 +159,10 @@ class Application(Frame):
             self.query.insert("1.0", query)
             self.on_submit()
 
+        if MyModel == "text-davinci-edit-001":
+            self.query.insert("1.0", "text")
+            self.txt.insert("1.0", "instructions")
+
 #----------------------------------------------------------------------
 
     def on_submit(self, e=None):
@@ -191,7 +195,14 @@ class Application(Frame):
                     input=self.txt.get("1.0", END),
                     instruction=querytext.strip(),
                     temperature=0.7,
-                    top_p=1)
+                    top_p=1
+                )
+            elif MyModel == "gpt-3.5-turbo":
+                response = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    messages = [{"role": "user", "content" : querytext.strip()}]
+                )
+                print("gpt-3.5-turbo")
             else:
                 # print("Completion models")
                 response = openai.Completion.create(
@@ -201,10 +212,14 @@ class Application(Frame):
                     max_tokens=int(MyTokens),
                     top_p=1,
                     frequency_penalty=0,
-                    presence_penalty=0)
+                    presence_penalty=0
+                )
 
             # display Gpt response in Text widget
-            output = response["choices"][0]["text"]
+            if MyModel == "gpt-3.5-turbo":
+                output = response['choices'][0]['message']['content']
+            else:
+                output = response["choices"][0]["text"]
             # collect response token info
             self.length = len(output)
             self.completion = response["usage"]["completion_tokens"]
