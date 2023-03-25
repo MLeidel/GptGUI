@@ -1,6 +1,8 @@
 # GptGUI
 _Python GUI for Linux or Windows to access OpenAI Gpt Engine._
 
+___Now handles text-davinci-003 and gpt-3.5-turbo___
+
 ## Instalation
 
 For windows you can downolad the _setup\_GptGUI.exe_ file supplied with this repo.
