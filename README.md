@@ -1,7 +1,8 @@
 # GptGUI
 _Python GUI for Linux or Windows to access OpenAI Gpt Engine._
 
-___Now handles text-davinci-003 and gpt-3.5-turbo___
+___Now handles text-davinci-003 and gpt-3.5-turbo___  
+make sure to _pip install_ the latest _openai_ module
 
 ## Instalation
 
@@ -51,12 +52,12 @@ Then click the _Save & Close_ button.
 The options are stored in a plain text file called _gptgui.ini_.  
 If you prefer you could change the settings with a text editor.
 
-The height of the query text area (top frame) can be lengthened
+The height of the query text area (top frame) can be lengthened  
 or shortened by accessing the right-click menu.
 
 ---
 
-### Using
+### Buttons
 
 ![alttext](images/gptgui.png "Ctrl-t for Response Metrics")
 
@@ -74,6 +75,11 @@ the options which automatically saves each query/response.
 > Displays the _save_ file you set up in Options (gptgui.ini).
 - Purge
 > Clears the contens of the _save_ file.
+- Text
+> Opens the current response or selection in your text editor.  
+Set up the name of your text editor in the options.
+- Html
+> Opens the current response or selection in your default browser.
 - Options
 > launches the Options editor program.
 - Close

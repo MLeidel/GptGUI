@@ -66,6 +66,12 @@ class Application(Frame):
         lbl = Label(self, text='Top Frame Size')
         lbl.grid(row=13, column=1, sticky='e', pady=4, padx=4)
 
+        lbl = Label(self, text='Text editor')
+        lbl.grid(row=14, column=1, sticky='e', pady=4, padx=4)
+
+        lbl = Label(self, text='Temp file name')
+        lbl.grid(row=15, column=1, sticky='e', pady=4, padx=4)
+
         self.vent_theme = StringVar()
         ent_theme = Combobox(self, textvariable=self.vent_theme, width=10)
         ent_theme['values'] = ('darkly',
@@ -148,6 +154,14 @@ class Application(Frame):
         ent_size = Entry(self, textvariable=self.vent_size, width=4)
         ent_size.grid(row=13, column=2, sticky='w', pady=4, padx=4)
 
+        self.vent_edit = StringVar()
+        ent_edit = Entry(self, textvariable=self.vent_edit)
+        ent_edit.grid(row=14, column=2, sticky='w', pady=4, padx=4)
+
+        self.vent_file = StringVar()
+        end_file = Entry(self, textvariable=self.vent_file)
+        end_file.grid(row=15, column=2, sticky='w', pady=4, padx=4)
+
         btn_path = Button(self, text='Browse', command=self.browse_path)
         btn_path.grid(row=2, column=3, pady=4, padx=4)
 
@@ -158,7 +172,7 @@ class Application(Frame):
         btn_gfont.grid(row=5, column=3, pady=4, padx=4)
 
         btn_close = Button(self, text='Save & Close', command=self.on_close)
-        btn_close.grid(row=16, column=2, pady=4, padx=4)
+        btn_close.grid(row=15, column=3, pady=4, padx=4)
 
         # set initial field values from ini file
         self.vent_theme.set(MyTheme)
@@ -174,7 +188,8 @@ class Application(Frame):
         self.vcb.set(MyTime)
         self.vcv.set(MySave)
         self.vent_size.set(MySize)
-
+        self.vent_edit.set(MyEditor)
+        self.vent_file.set(MyFile)
 
     def browse_path(self):
         ''' browse with filedialog for directory '''
@@ -213,6 +228,8 @@ class Application(Frame):
         config['Main']['showtime'] = str(self.vcb.get())
         config['Main']['autosave'] = str(self.vcv.get())
         config['Main']['top_frame'] = str(self.vent_size.get())
+        config['Main']['editor'] = str(self.vent_edit.get())
+        config['Main']['tempfile'] = str(self.vent_file.get())
 
         with open('gptgui.ini', 'w') as configfile:
             config.write(configfile)
@@ -245,6 +262,8 @@ MyKey = config['Main']['gptkey']
 MyTime = config['Main']['showtime']
 MySave = config['Main']['autosave']
 MySize = config['Main']['top_frame']
+MyEditor = config['Main']['editor']
+MyFile = config['Main']['tempfile']
 
 # change working directory to path for this file
 p = os.path.realpath(__file__)

@@ -1,12 +1,16 @@
 '''
-code file: gptgui_35.py
+code file: gptgui.py
 date: 3-15-2023 add gpt-3.5-turbo
+date: 3-29-2023 add markdown to browser
+date: 3-31-2023 add text to editor
 '''
 import os
 import sys
 import time
 import configparser
 import subprocess
+import webbrowser
+import markdown
 from tkinter.font import Font
 from tkinter import messagebox
 from ttkbootstrap import *
@@ -74,22 +78,35 @@ class Application(Frame):
         clear = Button(btn_frame, text='Clear', command=self.on_clear_all)
         clear.grid(row=1, column=2, sticky='w',
                    pady=(5, 0), padx=(5, 7))
+
         self.save = Button(btn_frame, text='Save', command=self.on_save_file)
         self.save.grid(row=1, column=3, sticky='w',
                    pady=(5, 0), padx=5)
+
         view = Button(btn_frame, text='View', command=self.on_view_file)
         view.grid(row=1, column=4, sticky='w',
                    pady=(5, 0))
+
         purge = Button(btn_frame, text='Purge', command=self.on_purge)
         purge.grid(row=1, column=5, sticky='w',
                    pady=(5, 0), padx=5)
+
+        self.open = Button(btn_frame, text='Text', command=self.on_md_open)
+        self.open.grid(row=1, column=6, sticky='w',
+                     pady=(5, 0), padx=5)
+
+        self.md = Button(btn_frame, text='Html', command=self.on_md_render)
+        self.md.grid(row=1, column=7, sticky='w',
+                     pady=(5, 0), padx=(0, 5))
+
         opts = Button(btn_frame, text='Options', command=self.options)
-        opts.grid(row=1, column=6, sticky='w',
+        opts.grid(row=1, column=8, sticky='w',
                    pady=(5, 0), padx=5)
+
         self.sub = Button(btn_frame,
                      text='Submit Query (Ctrl-g)',
                      command=self.on_submit, width=35)
-        self.sub.grid(row=1, column=7, sticky='w',
+        self.sub.grid(row=1, column=9, sticky='w',
                    pady=(5, 0), padx=(20, 0))
 
        # END BUTTON FRAME
@@ -145,6 +162,12 @@ class Application(Frame):
                 bootstyle=(INFO))
         ToolTip(self.sub,
                 text="Ctrl-Enter to Append",
+                bootstyle=(INFO))
+        ToolTip(self.md,
+                text="markdown to browser",
+                bootstyle=(INFO))
+        ToolTip(self.open,
+                text="markdown to editor",
                 bootstyle=(INFO))
 
         if MySave == "1":
@@ -204,9 +227,7 @@ class Application(Frame):
                     temperature=float(MyTemp),
                     messages = [{"role": "user", "content" : querytext.strip()}]
                 )
-                # print("gpt-3.5-turbo")
-            else:
-                # print("Completion models")
+            else:  # print("Completion models")
                 response = openai.Completion.create(
                     model=MyModel,
                     prompt=querytext.strip(),
@@ -230,7 +251,7 @@ class Application(Frame):
             # display response text
             if MyTime == "1" and MyModel != "text-davinci-edit-001":
                 self.elapsed = (time.time() - start)
-                output = f"elapsed time: {round(self.elapsed, 5)}\n-----" + output
+                output = f"elapsed time: {round(self.elapsed, 5)}\n-----\n" + output
             if renderStyle != "Return":
                 self.txt.delete("1.0", END)
                 self.txt.insert("1.0", output)
@@ -326,8 +347,9 @@ class Application(Frame):
         msg = "text length: " + str(self.length) + \
               "\ncompletion tokens: " + str(self.completion) + \
               "\ntotal tokens: " + str(self.total) + \
-              "\nprompt tokens: " + str(self.prompt) + \
-              "\nResponse Time Elapsed: " + str(self.elapsed)
+              "\nprompt tokens: " + str(self.prompt)
+        if MyTime == "1":
+            msg += "\nResponse Time Elapsed: " + str(self.elapsed)
         messagebox.showinfo("GptGUI Response Tokens", msg)
 
     def on_toggle_time(self, e=None):
@@ -339,6 +361,45 @@ class Application(Frame):
             MyTime = "1"
         messagebox.showinfo("Toggle Show Elapsed Time",
                             "    Set to " + MyTime + "       ")
+
+    def getmdtext(self):
+        ''' get all or selected text '''
+        if self.txt.tag_ranges("sel"):
+            text = self.txt.selection_get()
+        else:  # Select All
+            self.txt.focus()
+            self.txt.tag_add(SEL, '1.0', END)
+            self.txt.mark_set(INSERT, '1.0')
+            self.txt.see(INSERT)
+            if self.txt.tag_ranges("sel"):
+                text = self.txt.selection_get()
+                self.txt.tag_remove(SEL, "1.0", END)
+        return text
+
+    def on_md_open(self, e=None):
+        ''' open txt (MD) in your text editor '''
+        text = self.getmdtext()
+        filename = os.getcwd() + '/' + MyFile
+        print(filename)
+        with open(filename, 'w') as f:
+            f.write(text)
+        print(filename, MyEditor)
+        subprocess.Popen([MyEditor, filename])
+
+    def on_md_render(self, e=None):
+        ''' render txt (MD) to html and show window '''
+        text = self.getmdtext()
+        # convert MD to HTML
+        H = markdown.markdown(text,
+                              extensions=['fenced_code'])
+        # write to file
+        filename = os.getcwd() + '/' + MyFile + '.html'
+        print(filename)
+        with open(filename, 'w') as f:
+            f.write(H)
+        # open file in browser
+        webbrowser.open_new_tab('file:///' + filename)
+
 
     def on_kb_help(self, e=None):
         ''' display hot keys message '''
@@ -465,10 +526,13 @@ MyFntGptZ = config['Main']['fontgptsiz']
 MyModel = config['Main']['engine']
 MyTemp = config['Main']['temperature']
 MyTokens = config['Main']['tokens']
-MyKey = config['Main']['gptkey']  # can be actual key or ENV var.
+MyKey = config['Main']['gptkey']
 MyTime = config['Main']['showtime']
 MySave = config['Main']['autosave']
+MyEditor = config['Main']['editor']
+MyFile = config['Main']['tempfile']
 TOPFRAME = int(config['Main']['top_frame'])
+
 if len(MyKey) < 16:
     MyKey = os.environ.get(MyKey)  # Using ENV var instead of actual key string.
 
@@ -490,7 +554,7 @@ else:
     root.geometry("675x505") # WxH+left+top
 
 root.protocol("WM_DELETE_WINDOW", save_location)  # TO SAVE GEOMETRY INFO
-root.minsize(768, 325)  # width, height
+root.minsize(875, 325)  # width, height
 Sizegrip(root).place(rely=1.0, relx=1.0, x=0, y=0, anchor='se')
 
 Application(root)
