@@ -44,9 +44,6 @@ Then click the _Save & Close_ button.
 The options are stored in a plain text file called _gptgui.ini_.  
 If you prefer you could change the settings with a text editor.
 
-The height of the query text area (top frame) can be lengthened  
-or shortened by accessing the right-click menu.
-
 
 ![input box](images/gptopts.png "GptGUI options window")
 
@@ -98,6 +95,12 @@ Set up the name of your text editor in the options.
 
 
 ---
+
+### Context menu
+
+There is a context (Right-Click) menu for convenience.
+The height of the query text area (top frame) can be lengthened
+or shortened by in this menu.
 
 ### How to use the code-davinci-002	Codex model
 
