@@ -39,15 +39,7 @@ Then put the variable's name into the "Gpt Key" entry box.
 Change any other appearance or Gpt options as well.  
 Then click the _Save & Close_ button.
 
-![input box](images/gptopts.png "GptGUI options window")
-
----
-
-## A few more notes
-
----
-
-### gptgui.ini
+## gptgui.ini
 
 The options are stored in a plain text file called _gptgui.ini_.  
 If you prefer you could change the settings with a text editor.
@@ -55,9 +47,13 @@ If you prefer you could change the settings with a text editor.
 The height of the query text area (top frame) can be lengthened  
 or shortened by accessing the right-click menu.
 
+
+![input box](images/gptopts.png "GptGUI options window")
+
 ---
 
-### Buttons
+## Buttons
+
 
 ![alttext](images/gptgui.png "Ctrl-t for Response Metrics")
 
