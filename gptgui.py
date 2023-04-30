@@ -75,20 +75,20 @@ class Application(Frame):
         btn_frame = Frame(self)
         btn_frame.grid(row=4, column=1, sticky='w')
 
-        clear = Button(btn_frame, text='Clear', command=self.on_clear_all)
-        clear.grid(row=1, column=2, sticky='w',
+        self.clear = Button(btn_frame, text='Clear', command=self.on_clear_all)
+        self.clear.grid(row=1, column=2, sticky='w',
                    pady=(5, 0), padx=(5, 7))
 
         self.save = Button(btn_frame, text='Save', command=self.on_save_file)
         self.save.grid(row=1, column=3, sticky='w',
                    pady=(5, 0), padx=5)
 
-        view = Button(btn_frame, text='View', command=self.on_view_file)
-        view.grid(row=1, column=4, sticky='w',
+        self.view = Button(btn_frame, text='View', command=self.on_view_file)
+        self.view.grid(row=1, column=4, sticky='w',
                    pady=(5, 0))
 
-        purge = Button(btn_frame, text='Purge', command=self.on_purge)
-        purge.grid(row=1, column=5, sticky='w',
+        self.purge = Button(btn_frame, text='Purge', command=self.on_purge)
+        self.purge.grid(row=1, column=5, sticky='w',
                    pady=(5, 0), padx=5)
 
         self.open = Button(btn_frame, text='Text', command=self.on_md_open)
@@ -99,8 +99,8 @@ class Application(Frame):
         self.md.grid(row=1, column=7, sticky='w',
                      pady=(5, 0), padx=(0, 5))
 
-        opts = Button(btn_frame, text='Options', command=self.options)
-        opts.grid(row=1, column=8, sticky='w',
+        self.opts = Button(btn_frame, text='Options', command=self.options)
+        self.opts.grid(row=1, column=8, sticky='w',
                    pady=(5, 0), padx=5)
 
         self.sub = Button(btn_frame,
@@ -146,7 +146,6 @@ class Application(Frame):
         root.bind("<Control-t>", self.show_tokens)  # Show result tokens in title
         root.bind("<Control-m>", self.on_toggle_time)  # time elapsed toggle
         root.bind("<Control-h>", self.on_kb_help)  # show hotkey help
-        root.bind("<Control-k>", self.options)  # Options button
         root.bind("<Control-q>", self.exit_program)  # Close button
         root.bind("<Control-s>", self.on_save_file)  # Save button
         root.bind("<Control-g>", self.on_submit)  # Submit Query button
@@ -154,21 +153,34 @@ class Application(Frame):
 
 
         # ToolTips
-        ToolTip(self.query,
-                text="Type your query here. Then hit 'Submit Query",
-                bootstyle=(INFO))
-        ToolTip(purge,
-                text="Remove all saved query responses",
-                bootstyle=(INFO))
+        ToolTip(self.clear,
+                text="Erase window text",
+                bootstyle=(INFO, INVERSE),
+                wraplength=140)
+        ToolTip(self.view,
+                text="View saved text in window",
+                bootstyle=(INFO, INVERSE),
+                wraplength=140)
+        ToolTip(self.save,
+                text="Append current text",
+                bootstyle=(INFO, INVERSE),
+                wraplength=140)
+        ToolTip(self.purge,
+                text="Remove all saved text",
+                bootstyle=(INFO, INVERSE),
+                wraplength=140)
         ToolTip(self.sub,
                 text="Ctrl-Enter to Append",
-                bootstyle=(INFO))
+                bootstyle=(INFO, INVERSE),
+                wraplength=140)
         ToolTip(self.md,
                 text="markdown to browser",
-                bootstyle=(INFO))
+                bootstyle=(INFO, INVERSE),
+                wraplength=140)
         ToolTip(self.open,
-                text="markdown to editor",
-                bootstyle=(INFO))
+                text="markdown to text editor",
+                bootstyle=(INFO, INVERSE),
+                wraplength=140)
 
         if MySave == "1":
             self.save.config(text="Auto Save", bootstyle="default-outline")
@@ -410,7 +422,6 @@ class Application(Frame):
 <Ctrl-h> This HotKey help\n
 <Ctrl-q> Close Program\n
     No Prompt\n
-<Ctrl-k> Set Options (Button)\n
 <Ctrl-s> Save output (Button)\n
 <Ctrl-g> Submit Query (Button)\n
 <Ctrl-Enter> Submit & Append\n

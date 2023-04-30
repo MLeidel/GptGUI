@@ -88,6 +88,7 @@ Set up the name of your text editor in the options.
 |__Ctrl-m__| Toggle show-elapsed-time temporarily|
 |__Ctrl-h__| This HotKey help|
 |__Ctrl-q__| Close Program No Prompt|
+|__Ctrl-k__| Set Options (Button)|
 |__Ctrl-s__| Save output (Button)|
 |__Ctrl-g__| Submit Query (Button)|
 |__Ctrl-Enter__ | Submit Query & Append to existing text|
