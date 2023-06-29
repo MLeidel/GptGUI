@@ -22,14 +22,15 @@ Use the requirements.txt file to install any modules you may be missing.
     pip3 install -r requirements.txt
 ```
 
+___
 
-> ___
 You will also have to Sign Up at https://openai.com/api/ and __create
 an API Key__.  
 There is no cost to do so.
+
 ___
 
->(For Text to Speak) please install:
+(For Text to Speech feature) please install:
 - __espeak-ng__  
   see: https://github.com/espeak-ng/espeak-ng/blob/master/docs/guide.md
   
