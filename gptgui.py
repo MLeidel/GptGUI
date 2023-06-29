@@ -1,12 +1,16 @@
 '''
+gptgui.py by Michael Leidel
 code file: gptgui.py
 date: 3-15-2023 add gpt-3.5-turbo
 date: 3-29-2023 add markdown to browser
 date: 3-31-2023 add text to editor
+date: 6-29-2023 add espeak-ng speak text capability
+                fix View log formatting
 '''
 import os
 import sys
 import time
+import signal
 import configparser
 import subprocess
 import webbrowser
@@ -129,7 +133,11 @@ class Application(Frame):
                                      command=lambda: self.popquery(4))
         self.popup_query.add_command(label="Smaller",
                                      command=lambda: self.popquery(5))
+        self.popup_query.add_separator()
+        self.popup_query.add_command(label="Browser",
+                                     command=lambda: self.popquery(6))
         self.query.bind("<Button-3>", self.do_pop_query)
+
         # Popup menus - for self.txt Text widgets
         self.popup_txt = Menu(tearoff=0, title="title")
         self.popup_txt.add_command(label="Copy",
@@ -150,6 +158,8 @@ class Application(Frame):
         root.bind("<Control-s>", self.on_save_file)  # Save button
         root.bind("<Control-g>", self.on_submit)  # Submit Query button
         root.bind("<Control-Return>", self.on_submit)  # Submit Query button
+        root.bind("<Control-Shift-S>", self.speak_text)  # speak query response
+        root.bind("<Escape>", self.speak_text_cancel)  # stop speaking
 
 
         # ToolTips
@@ -307,14 +317,14 @@ class Application(Frame):
         if qury == "" or resp == "":  # make sure there is a query present
             return
         try:
-            msg = "\ncompletion tokens: " + str(self.completion) + \
-                  "\ntotal tokens: " + str(self.total) + \
-                  "\nprompt tokens: " + str(self.prompt) + "\n-----\n"
+            msg = "  \ncompletion tokens: " + str(self.completion) + \
+                  "  \ntotal tokens: " + str(self.total) + \
+                  "  \nprompt tokens: " + str(self.prompt) + "\n-----\n"
             with open(MyPath, "a") as fout:
-                fout.write(str(now.strftime("%Y-%m-%d %H:%M\n")))
-                fout.write(qury + "\n----- " + MyModel)
+                fout.write(str(now.strftime("%Y-%m-%d %H:%M  \n")))
+                fout.write(qury + "  \nengine: " + MyModel)
                 fout.write(msg)
-                fout.write(resp.strip() + "\n----------------\n\n")
+                fout.write(resp.strip() + "\n\n---\n\n")
         except Exception as e:
             messagebox.showerror("Save Query Problem", e)
 
@@ -388,6 +398,7 @@ class Application(Frame):
                 self.txt.tag_remove(SEL, "1.0", END)
         return text
 
+
     def on_md_open(self, e=None):
         ''' open txt (MD) in your text editor '''
         text = self.getmdtext()
@@ -397,6 +408,7 @@ class Application(Frame):
             f.write(text)
         print(filename, MyEditor)
         subprocess.Popen([MyEditor, filename])
+
 
     def on_md_render(self, e=None):
         ''' render txt (MD) to html and show window '''
@@ -413,6 +425,16 @@ class Application(Frame):
         webbrowser.open_new_tab('file:///' + filename)
 
 
+    def speak_text(self, e=None):
+        ''' Speak the query response text '''
+        text = self.getmdtext()  # get selected or all text
+        self.espeak_proc = subprocess.Popen(["espeak-ng", text])
+
+    def speak_text_cancel(self, e=None):
+        ''' cancel the currently speaking text '''
+        self.espeak_proc.send_signal(signal.SIGINT)
+
+
     def on_kb_help(self, e=None):
         ''' display hot keys message '''
         msg = '''
@@ -425,6 +447,8 @@ class Application(Frame):
 <Ctrl-s> Save output (Button)\n
 <Ctrl-g> Submit Query (Button)\n
 <Ctrl-Enter> Submit & Append\n
+<Ctrl-Shift-S> Speak the Text\n
+<Escape> Cancel Speaking Text\n
         '''
         messagebox.showinfo("Hot Keys Help", msg)
 
@@ -474,6 +498,9 @@ class Application(Frame):
             if TOPFRAME > 3:
                 TOPFRAME -= 2
                 self.query.config(height=TOPFRAME)
+        else:   # 6
+            search = self.query.selection_get()
+            webbrowser.open("https://duckduckgo.com/?q=" + search)
 
     def poptxt(self, n):
         ''' Routes txt Text context menu actions '''

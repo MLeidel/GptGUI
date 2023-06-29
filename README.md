@@ -29,6 +29,12 @@ an API Key__.
 There is no cost to do so.
 ___
 
+>(For Text to Speak) please install:
+- __espeak-ng__  
+  see: https://github.com/espeak-ng/espeak-ng/blob/master/docs/guide.md
+  
+---
+
 After starting the app the first time click the _Options_
 button.
 
@@ -91,6 +97,8 @@ Set up the name of your text editor in the options.
 |__Ctrl-s__| Save output (Button)|
 |__Ctrl-g__| Submit Query (Button)|
 |__Ctrl-Enter__ | Submit Query & Append to existing text|
+|__Ctrl-Shift-S__ | Speak the Query Response Text|
+|__Escape__ | Cancel Speaking the Text|
 
 
 ---
