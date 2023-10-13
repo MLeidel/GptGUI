@@ -356,12 +356,34 @@ class Application(Frame):
 
     def options(self, e=None):
         ''' Launch Options program and exit this program '''
-        if e is None:  # ctrl-q avoids this message
-            if messagebox.askokcancel('GptGUI',
-                'Close this to launch Options') is False:
-                return
-        subprocess.Popen([PY, "gptopt.py"])
-        save_location()
+        subprocess.call([PY, "gptopt.py"])
+        # re-read configuration
+        config = configparser.ConfigParser()
+        config.read('gptgui.ini')
+        MyTheme = config['Main']['theme']
+        MyPath = config['Main']['path']
+        MyFntQryF = config['Main']['fontqryfam']
+        MyFntQryZ = config['Main']['fontqrysiz']
+        MyFntGptF = config['Main']['fontgptfam']
+        MyFntGptZ = config['Main']['fontgptsiz']
+        MyModel = config['Main']['engine']
+        MyTemp = config['Main']['temperature']
+        MyTokens = config['Main']['tokens']
+        MyKey = config['Main']['gptkey']
+        MyTime = config['Main']['showtime']
+        MySave = config['Main']['autosave']
+        MyEditor = config['Main']['editor']
+        MyFile = config['Main']['tempfile']
+        TOPFRAME = int(config['Main']['top_frame'])
+        # re-set the items and change font/size
+        efont = Font(family=MyFntQryF, size=MyFntQryZ)
+        self.query.configure(font=efont, height=TOPFRAME)
+        efont = Font(family=MyFntGptF, size=MyFntGptZ)
+        self.txt.configure(font=efont)
+        style = Style()
+        style = Style(theme=MyTheme)
+        MyTitle = "GptGUI (OpenAI) " + MyModel + " " + str(MyTokens) + " " + str(MyTemp)
+        root.title(MyTitle)
 
 
     def show_tokens(self, e=None):

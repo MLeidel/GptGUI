@@ -233,18 +233,8 @@ class Application(Frame):
 
         with open('gptgui.ini', 'w') as configfile:
             config.write(configfile)
-        ret = messagebox.askokcancel("Configuration Saved",
-                                     "Re-launch GptGUI?")
-        if ret is True:
-            subprocess.Popen([PY, GPTGUI])
         root.destroy()
 
-    # def eventHandler(self):
-    #     pass
-
-    # def eventHandler(self):
-    #     pass
-#
 
 config = configparser.ConfigParser()
 config.read('gptgui.ini')
@@ -271,15 +261,11 @@ os.chdir(os.path.dirname(p))
 
 root = Window("GptGUI Options", MyTheme)
 
-# root.protocol("WM_DELETE_WINDOW", save_location)  # UNCOMMENT TO SAVE GEOMETRY INFO
 Sizegrip(root).place(rely=1.0, relx=1.0, x=0, y=0, anchor='se')
 root.resizable(0, 0) # no resize & removes maximize button
-# root.minsize(w, h)  # width, height
-# root.maxsize(w, h)
-# root.overrideredirect(True) # removed window decorations
 root.iconphoto(False, PhotoImage(file='icon.png'))
 root.attributes("-topmost", True)  # Keep on top of other windows
-
+# root.geometry("+100+20")
 Application(root)
 
 root.mainloop()
