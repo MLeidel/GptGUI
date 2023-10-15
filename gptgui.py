@@ -33,6 +33,27 @@ class Application(Frame):
         Frame.__init__(self, parent)
         self.pack(fill=BOTH, expand=True, padx=4, pady=4)
         self.Saved = True
+        # get settings from ini file
+        config = configparser.ConfigParser()
+        config.read('gptgui.ini')
+        self.MyTheme = config['Main']['theme']
+        self.MyPath = config['Main']['path']
+        self.MyFntQryF = config['Main']['fontqryfam']
+        self.MyFntQryZ = config['Main']['fontqrysiz']
+        self.MyFntGptF = config['Main']['fontgptfam']
+        self.MyFntGptZ = config['Main']['fontgptsiz']
+        self.MyModel = config['Main']['engine']
+        self.MyTemp = config['Main']['temperature']
+        self.MyTokens = config['Main']['tokens']
+        self.MyKey = config['Main']['gptkey']
+        self.MyTime = config['Main']['showtime']
+        self.MySave = config['Main']['autosave']
+        self.MyEditor = config['Main']['editor']
+        self.MyFile = config['Main']['tempfile']
+        self.TOPFRAME = int(config['Main']['top_frame'])
+        if len(self.MyKey) < 16:
+            self.MyKey = os.environ.get(self.MyKey)  # Using ENV var instead of actual key string.
+
         self.create_widgets()
 
     def create_widgets(self):
@@ -44,12 +65,12 @@ class Application(Frame):
 
         self.query = Text(self)
         self.query.grid(row=1, column=1, columnspan=2, sticky='nsew')
-        efont = Font(family=MyFntQryF, size=MyFntQryZ)
+        efont = Font(family=self.MyFntQryF, size=self.MyFntQryZ)
         self.query.configure(font=efont)
         self.query.config(wrap="word", # wrap=NONE
                           undo=True, # Tk 8.4
                           width=50,
-                          height=TOPFRAME,
+                          height=self.TOPFRAME,
                           padx=5, # inner margin
                           #insertbackground='#000',   # cursor color
                           tabs=(efont.measure(' ' * 4),))
@@ -61,7 +82,7 @@ class Application(Frame):
 
         self.txt = Text(self)
         self.txt.grid(row=2, column=1, columnspan=2, sticky='nsew')
-        efont = Font(family=MyFntGptF, size=MyFntGptZ)
+        efont = Font(family=self.MyFntGptF, size=self.MyFntGptZ)
         self.txt.configure(font=efont)
         self.txt.config(wrap="word", # wrap=NONE
                         undo=True, # Tk 8.4
@@ -192,7 +213,7 @@ class Application(Frame):
                 bootstyle=(INFO, INVERSE),
                 wraplength=140)
 
-        if MySave == "1":
+        if self.MySave == "1":
             self.save.config(text="Auto Save", bootstyle="default-outline")
         self.query.focus_set()
 
@@ -203,10 +224,6 @@ class Application(Frame):
             query = " ".join(sys.argv[1:])
             self.query.insert("1.0", query)
             self.on_submit()
-
-        if MyModel == "text-davinci-edit-001":
-            self.query.insert("1.0", "text")
-            self.txt.insert("1.0", "instructions")
 
 #----------------------------------------------------------------------
 
@@ -220,12 +237,12 @@ class Application(Frame):
         querytext = self.query.get("1.0", END)
         if len(querytext) < 4:
             return
-        if MySave == "0":
+        if self.MySave == "0":
             self.save.configure(bootstyle=DEFAULT) # new - not been saved
             self.Saved = False
         # get the Gpt key from the ini value
         try:
-            openai.api_key = MyKey  # openai API
+            openai.api_key = self.MyKey  # openai API
         except Exception as e:
             messagebox.showerror("Could Not Read Key file",
                        "Did you enter your Gpt Key?")
@@ -233,45 +250,36 @@ class Application(Frame):
 
         # openai API request code
         try:
-            if MyModel == "text-davinci-edit-001":
-                # print("Edit model")
-                response = openai.Edit.create(
-                    model="text-davinci-edit-001",
-                    input=self.txt.get("1.0", END),
-                    instruction=querytext.strip(),
-                    temperature=0.7,
-                    top_p=1
-                )
-            elif MyModel == "gpt-3.5-turbo":
+            if self.MyModel.startswith("gpt-3.5-turbo") :
                 response = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",
-                    max_tokens=int(MyTokens),
-                    temperature=float(MyTemp),
-                    messages = [{"role": "user", "content" : querytext.strip()}]
+                    model=self.MyModel,
+                    max_tokens=int(self.MyTokens),
+                    temperature=float(self.MyTemp),
+                    messages=[{"role": "user", "content" : querytext.strip()}]
                 )
-            else:  # print("Completion models")
+            else:  # Not used with ...turbo models can be eliminated
                 response = openai.Completion.create(
-                    model=MyModel,
+                    model=self.MyModel,
                     prompt=querytext.strip(),
-                    temperature=float(MyTemp),
-                    max_tokens=int(MyTokens),
+                    temperature=float(self.MyTemp),
+                    max_tokens=int(self.MyTokens),
                     top_p=1,
                     frequency_penalty=0,
                     presence_penalty=0
                 )
 
             # display Gpt response in Text widget
-            if MyModel == "gpt-3.5-turbo":
+            if self.MyModel.startswith("gpt-3.5-turbo") :
                 output = response['choices'][0]['message']['content']
             else:
-                output = response["choices"][0]["text"]
+                output = response["choices"][0]["text"]  # deprecated
             # collect response token info
             self.length = len(output)
             self.completion = response["usage"]["completion_tokens"]
             self.total = response["usage"]["total_tokens"]
             self.prompt = response["usage"]["prompt_tokens"]
             # display response text
-            if MyTime == "1" and MyModel != "text-davinci-edit-001":
+            if self.MyTime == "1" :
                 self.elapsed = (time.time() - start)
                 output = f"elapsed time: {round(self.elapsed, 5)}\n-----\n" + output
             if renderStyle != "Return":
@@ -281,19 +289,20 @@ class Application(Frame):
                 # self.txt.mark_set(INSERT, END)
                 self.txt.insert(END, output)
             # on Auto Save do the save
-            if MySave == "1":
+            if self.MySave == "1":
                 self.on_save_file()
         except Exception as e:
             messagebox.showerror("Problems", e)
+            print("Key=", self.MyKey)
 
     def on_purge(self):
         ''' User is purging the query-save file '''
-        if not os.path.isfile(MyPath):
-            messagebox.showwarning(MyPath, "Empty - No File to purge")
+        if not os.path.isfile(self.MyPath):
+            messagebox.showwarning(self.MyPath, "Empty - No File to purge")
             return
         ret = messagebox.askokcancel("Purge", "Delete All Saved Queries?")
         if ret is True:
-            os.remove(MyPath)
+            os.remove(self.MyPath)
             messagebox.showinfo("Purge", "Saved Queries Deleted.")
 
 
@@ -320,7 +329,7 @@ class Application(Frame):
             msg = "  \ncompletion tokens: " + str(self.completion) + \
                   "  \ntotal tokens: " + str(self.total) + \
                   "  \nprompt tokens: " + str(self.prompt) + "\n-----\n"
-            with open(MyPath, "a") as fout:
+            with open(self.MyPath, "a") as fout:
                 fout.write(str(now.strftime("%Y-%m-%d %H:%M  \n")))
                 fout.write(qury + "  \nengine: " + MyModel)
                 fout.write(msg)
@@ -328,7 +337,7 @@ class Application(Frame):
         except Exception as e:
             messagebox.showerror("Save Query Problem", e)
 
-        if MySave == "0":  # Auto Save is off
+        if self.MySave == "0":  # Auto Save is off
             # indicate that a "save" has processed
             self.save.configure(bootstyle="default-outline")
             self.Saved = True
@@ -336,8 +345,8 @@ class Application(Frame):
 
     def on_view_file(self):
         ''' View the user saved queries file '''
-        if not os.path.isfile(MyPath):
-            messagebox.showwarning(MyPath, "Empty - No File")
+        if not os.path.isfile(self.MyPath):
+            messagebox.showwarning(self.MyPath, "Empty - No File")
             return
         if self.Saved is False:
             if messagebox.askokcancel('GptGUI',
@@ -349,7 +358,7 @@ class Application(Frame):
         self.Saved = True
         self.save.configure(bootstyle=DEFAULT)
         self.txt.delete("1.0", END)
-        with open(MyPath, "r") as fin:
+        with open(self.MyPath, "r") as fin:
             self.txt.insert("1.0", fin.read())
         self.query.delete("1.0", END)
 
@@ -360,29 +369,31 @@ class Application(Frame):
         # re-read configuration
         config = configparser.ConfigParser()
         config.read('gptgui.ini')
-        MyTheme = config['Main']['theme']
-        MyPath = config['Main']['path']
-        MyFntQryF = config['Main']['fontqryfam']
-        MyFntQryZ = config['Main']['fontqrysiz']
-        MyFntGptF = config['Main']['fontgptfam']
-        MyFntGptZ = config['Main']['fontgptsiz']
-        MyModel = config['Main']['engine']
-        MyTemp = config['Main']['temperature']
-        MyTokens = config['Main']['tokens']
-        MyKey = config['Main']['gptkey']
-        MyTime = config['Main']['showtime']
-        MySave = config['Main']['autosave']
-        MyEditor = config['Main']['editor']
-        MyFile = config['Main']['tempfile']
-        TOPFRAME = int(config['Main']['top_frame'])
+        self.MyTheme = config['Main']['theme']
+        self.MyPath = config['Main']['path']
+        self.MyFntQryF = config['Main']['fontqryfam']
+        self.MyFntQryZ = config['Main']['fontqrysiz']
+        self.MyFntGptF = config['Main']['fontgptfam']
+        self.MyFntGptZ = config['Main']['fontgptsiz']
+        self.MyModel = config['Main']['engine']
+        self.MyTemp = config['Main']['temperature']
+        self.MyTokens = config['Main']['tokens']
+        self.MyKey = config['Main']['gptkey']
+        self.MyTime = config['Main']['showtime']
+        self.MySave = config['Main']['autosave']
+        self.MyEditor = config['Main']['editor']
+        self.MyFile = config['Main']['tempfile']
+        self.TOPFRAME = int(config['Main']['top_frame'])
+        if len(self.MyKey) < 16:
+            self.MyKey = os.environ.get(self.MyKey)  # Using ENV var instead of actual key string.
         # re-set the items and change font/size
-        efont = Font(family=MyFntQryF, size=MyFntQryZ)
-        self.query.configure(font=efont, height=TOPFRAME)
-        efont = Font(family=MyFntGptF, size=MyFntGptZ)
+        efont = Font(family=self.MyFntQryF, size=self.MyFntQryZ)
+        self.query.configure(font=efont, height=self.TOPFRAME)
+        efont = Font(family=self.MyFntGptF, size=self.MyFntGptZ)
         self.txt.configure(font=efont)
         style = Style()
-        style = Style(theme=MyTheme)
-        MyTitle = "GptGUI (OpenAI) " + MyModel + " " + str(MyTokens) + " " + str(MyTemp)
+        style = Style(theme=self.MyTheme)
+        MyTitle = "GptGUI (OpenAI) " + self.MyModel + " " + str(self.MyTokens) + " " + str(self.MyTemp)
         root.title(MyTitle)
 
 
@@ -392,19 +403,18 @@ class Application(Frame):
               "\ncompletion tokens: " + str(self.completion) + \
               "\ntotal tokens: " + str(self.total) + \
               "\nprompt tokens: " + str(self.prompt)
-        if MyTime == "1":
+        if self.MyTime == "1":
             msg += "\nResponse Time Elapsed: " + str(self.elapsed)
         messagebox.showinfo("GptGUI Response Tokens", msg)
 
     def on_toggle_time(self, e=None):
         ''' Toggles the showing of the response time '''
-        global MyTime
-        if MyTime == "1":
-            MyTime = "0"
+        if self.MyTime == "1":
+            self.MyTime = "0"
         else:
-            MyTime = "1"
+            self.MyTime = "1"
         messagebox.showinfo("Toggle Show Elapsed Time",
-                            "    Set to " + MyTime + "       ")
+                            "    Set to " + self.MyTime + "       ")
 
     def getmdtext(self):
         ''' get all or selected text '''
@@ -424,12 +434,12 @@ class Application(Frame):
     def on_md_open(self, e=None):
         ''' open txt (MD) in your text editor '''
         text = self.getmdtext()
-        filename = os.getcwd() + '/' + MyFile
+        filename = os.getcwd() + '/' + self.MyFile
         print(filename)
         with open(filename, 'w') as f:
             f.write(text)
-        print(filename, MyEditor)
-        subprocess.Popen([MyEditor, filename])
+        print(filename, self.MyEditor)
+        subprocess.Popen([self.MyEditor, filename])
 
 
     def on_md_render(self, e=None):
@@ -439,7 +449,7 @@ class Application(Frame):
         H = markdown.markdown(text,
                               extensions=['fenced_code'])
         # write to file
-        filename = os.getcwd() + '/' + MyFile + '.html'
+        filename = os.getcwd() + '/' + self.MyFile + '.html'
         print(filename)
         with open(filename, 'w') as f:
             f.write(H)
@@ -493,7 +503,6 @@ class Application(Frame):
 
     def popquery(self, n):
         ''' Routes query Text context menu actions '''
-        global TOPFRAME
         if n == 1:  # Copy
             root.clipboard_clear()  # clear clipboard contents
             if self.query.tag_ranges("sel"):
@@ -514,12 +523,12 @@ class Application(Frame):
                 root.clipboard_append(self.query.selection_get())
                 self.query.tag_remove(SEL, "1.0", END)
         elif n == 4:  # larger
-            TOPFRAME += 2
-            self.query.config(height=TOPFRAME)
+            self.TOPFRAME += 2
+            self.query.config(height=self.TOPFRAME)
         elif n == 5:  # smaller
-            if TOPFRAME > 3:
-                TOPFRAME -= 2
-                self.query.config(height=TOPFRAME)
+            if self.TOPFRAME > 3:
+                self.TOPFRAME -= 2
+                self.query.config(height=self.TOPFRAME)
         else:   # 6
             search = self.query.selection_get()
             webbrowser.open("https://duckduckgo.com/?q=" + search)
@@ -573,29 +582,13 @@ def save_location(e=None):
 # used for saving queries with date and time
 now = datetime.datetime.now()
 
-# get settings from ini file
+# get options that go into the window creation and title
 config = configparser.ConfigParser()
 config.read('gptgui.ini')
-
 MyTheme = config['Main']['theme']
-MyPath = config['Main']['path']
-MyFntQryF = config['Main']['fontqryfam']
-MyFntQryZ = config['Main']['fontqrysiz']
-MyFntGptF = config['Main']['fontgptfam']
-MyFntGptZ = config['Main']['fontgptsiz']
 MyModel = config['Main']['engine']
 MyTemp = config['Main']['temperature']
 MyTokens = config['Main']['tokens']
-MyKey = config['Main']['gptkey']
-MyTime = config['Main']['showtime']
-MySave = config['Main']['autosave']
-MyEditor = config['Main']['editor']
-MyFile = config['Main']['tempfile']
-TOPFRAME = int(config['Main']['top_frame'])
-
-if len(MyKey) < 16:
-    MyKey = os.environ.get(MyKey)  # Using ENV var instead of actual key string.
-
 
 # define main window
 MyTitle = "GptGUI (OpenAI) " + MyModel + " " + str(MyTokens) + " " + str(MyTemp)

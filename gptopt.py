@@ -115,16 +115,10 @@ class Application(Frame):
         self.vcmbo_model = StringVar()
         cmbo_model = Combobox(self, textvariable=self.vcmbo_model, width=20)
         cmbo_model['values'] = ('gpt-3.5-turbo',
-                                'text-davinci-003',
-                                'text-davinci-002',
-                                'code-davinci-002',
-                                'text-davinci-edit-001',
-                                'text-curie-001',
-                                'text-babbage-001',
-                                'text-ada-001')
-        # COMBO.bind('<<ComboboxSelected>>', self.ONCOMBOSELECT)
+                                'gpt-3.5-turbo-16k')
         # ent_model.current(0)
         cmbo_model.grid(row=7, column=2, sticky='w', pady=4, padx=4)
+        cmbo_model.bind('<<ComboboxSelected>>', self.onComboSelect)
 
         self.vcmbo_temp = StringVar()
         cmbo_temp = Combobox(self, textvariable=self.vcmbo_temp, width=6)
@@ -134,7 +128,7 @@ class Application(Frame):
         cmbo_temp.grid(row=8, column=2, sticky='w', pady=4, padx=4)
 
         self.vent_token = StringVar()
-        ent_token = Entry(self, textvariable=self.vent_token, width=4)
+        ent_token = Entry(self, textvariable=self.vent_token, width=6)
         ent_token.grid(row=9, column=2, sticky='w', pady=4, padx=4)
 
         self.vent_gptkey = StringVar()
@@ -212,6 +206,13 @@ class Application(Frame):
         self.vent_fgfam.set(f.cget("family"))
         self.vent_fgsiz.set(str(f.cget("size")))
 
+    def onComboSelect(self, e):
+        ''' pre set the tokens field for model '''
+        tok = self.vcmbo_model.get()
+        if tok == "gpt-3.5-turbo" :
+            self.vent_token.set("4097")
+        elif tok == "gpt-3.5-turbo-16k" :
+            self.vent_token.set("16385")
 
     def on_close(self):
         ''' Save to gptgui.ini and close the window '''
