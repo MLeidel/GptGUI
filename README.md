@@ -1,5 +1,5 @@
 # GptGUI
-_Python GUI for Linux or Windows to access OpenAI Gpt Engine._
+### Python GUI to access OpenAI Gpt Engine.
 
 ___Handles current specs for:___
 -  gpt-3.5-turbo 
@@ -9,13 +9,12 @@ ___Handles current specs for:___
 
 see https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbon  
 for modle parameters  
+
 _make sure to pip install the latest __openai__ module_
 
 ----
 
 ## Instalation
-
-For windows you can downolad the _setup\_GptGUI.exe_ file supplied with this repo.
 
 For Linux / Mac you can either _gh repo clone MLeidel/GptGUI_ or download a zip
 file of this repo.
