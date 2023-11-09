@@ -250,29 +250,16 @@ class Application(Frame):
 
         # openai API request code
         try:
-            if self.MyModel.startswith("gpt-3.5-turbo") :
-                response = openai.ChatCompletion.create(
-                    model=self.MyModel,
-                    max_tokens=int(self.MyTokens),
-                    temperature=float(self.MyTemp),
-                    messages=[{"role": "user", "content" : querytext.strip()}]
-                )
-            else:  # Not used with ...turbo models can be eliminated
-                response = openai.Completion.create(
-                    model=self.MyModel,
-                    prompt=querytext.strip(),
-                    temperature=float(self.MyTemp),
-                    max_tokens=int(self.MyTokens),
-                    top_p=1,
-                    frequency_penalty=0,
-                    presence_penalty=0
-                )
+            response = openai.ChatCompletion.create(
+                model=self.MyModel,
+                max_tokens=int(self.MyTokens),
+                temperature=float(self.MyTemp),
+                messages=[{"role": "user", "content" : querytext.strip()}]
+            )
 
             # display Gpt response in Text widget
-            if self.MyModel.startswith("gpt-3.5-turbo") :
-                output = response['choices'][0]['message']['content']
-            else:
-                output = response["choices"][0]["text"]  # deprecated
+
+            output = response['choices'][0]['message']['content']
             # collect response token info
             self.length = len(output)
             self.completion = response["usage"]["completion_tokens"]

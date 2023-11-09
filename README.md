@@ -1,8 +1,17 @@
 # GptGUI
 _Python GUI for Linux or Windows to access OpenAI Gpt Engine._
 
-___Now handles text-davinci-003 and gpt-3.5-turbo___  
-make sure to _pip install_ the latest _openai_ module
+___Handles current specs for:___
+-  gpt-3.5-turbo 
+-  gpt-3.5-turbo-1106 
+-  gpt-4-1106-preview 
+-  gpt-4 
+
+see https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbon  
+for modle parameters  
+_make sure to pip install the latest __openai__ module_
+
+----
 
 ## Instalation
 
