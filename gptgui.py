@@ -582,7 +582,7 @@ MyTemp = config['Main']['temperature']
 MyTokens = config['Main']['tokens']
 
 # define main window
-MyTitle = "GptGUI (OpenAI) " + MyModel + " " + str(MyTokens) + " " + str(MyTemp)
+MyTitle = "GptGUI (OpenAI 1.3.3) " + MyModel + " " + str(MyTokens)
 root = Window(MyTitle, MyTheme, iconphoto="icon.png")
 
 # change working directory to path for this file
