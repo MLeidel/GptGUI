@@ -1,11 +1,9 @@
 '''
-gptgui.py by Michael Leidel
-code file: gptgui.py
-date: 3-15-2023 add gpt-3.5-turbo
-date: 3-29-2023 add markdown to browser
-date: 3-31-2023 add text to editor
-date: 6-29-2023 add espeak-ng speak text capability
-                fix View log formatting
+gptgui.py 1.3
+    by Michael Leidel
+remarks:
+    modified API for openai >=1.3.3
+
 '''
 import os
 import sys
@@ -21,7 +19,7 @@ from ttkbootstrap import *
 from ttkbootstrap.constants import *
 from ttkbootstrap.tooltip import ToolTip
 import datetime
-import openai
+from openai import OpenAI
 
 # for subprocess to exec gptopt.py
 PY = "python3"  # Linux
@@ -50,6 +48,7 @@ class Application(Frame):
         self.MySave = config['Main']['autosave']
         self.MyEditor = config['Main']['editor']
         self.MyFile = config['Main']['tempfile']
+        self.MySystem = config['Main']['system']
         self.TOPFRAME = int(config['Main']['top_frame'])
         if len(self.MyKey) < 16:
             self.MyKey = os.environ.get(self.MyKey)  # Using ENV var instead of actual key string.
@@ -242,7 +241,9 @@ class Application(Frame):
             self.Saved = False
         # get the Gpt key from the ini value
         try:
-            openai.api_key = self.MyKey  # openai API
+            client = OpenAI(
+            api_key = self.MyKey  # openai API
+            )
         except Exception as e:
             messagebox.showerror("Could Not Read Key file",
                        "Did you enter your Gpt Key?")
@@ -250,22 +251,24 @@ class Application(Frame):
 
         # openai API request code
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model=self.MyModel,
                 max_tokens=int(self.MyTokens),
                 temperature=float(self.MyTemp),
-                messages=[{"role": "user", "content" : querytext.strip()}]
+                messages=[{"role": "system", "content": self.MySystem},
+                    {"role": "user", "content" : querytext.strip()}
+                ]
             )
 
             # display Gpt response in Text widget
 
-            output = response['choices'][0]['message']['content']
+            output = response.choices[0].message.content
             # collect response token info
             self.length = len(output)
-            self.completion = response["usage"]["completion_tokens"]
-            self.total = response["usage"]["total_tokens"]
-            self.prompt = response["usage"]["prompt_tokens"]
-            # display response text
+            self.completion = response.usage.completion_tokens
+            self.total = response.usage.total_tokens
+            self.prompt = response.usage.prompt_tokens
+            # # display response text
             if self.MyTime == "1" :
                 self.elapsed = (time.time() - start)
                 output = f"elapsed time: {round(self.elapsed, 5)}\n-----\n" + output
@@ -370,6 +373,7 @@ class Application(Frame):
         self.MySave = config['Main']['autosave']
         self.MyEditor = config['Main']['editor']
         self.MyFile = config['Main']['tempfile']
+        self.MySystem = config['Main']['system']
         self.TOPFRAME = int(config['Main']['top_frame'])
         if len(self.MyKey) < 16:
             self.MyKey = os.environ.get(self.MyKey)  # Using ENV var instead of actual key string.

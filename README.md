@@ -1,5 +1,5 @@
 # GptGUI
-### Python GUI to access OpenAI Gpt Engine.
+### Python GUI to access Gpt Engine with OpenAI v1.3.3
 
 ___Handles current specs for:___
 -  gpt-3.5-turbo 
@@ -7,10 +7,11 @@ ___Handles current specs for:___
 -  gpt-4-1106-preview 
 -  gpt-4 
 
-see https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbon  
+see https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo  
 for modle parameters  
 
-_make sure to pip install the latest __openai__ module_
+_make sure to pip install the latest __openai__ module_  
+__NOTE: Uses OpenAI module >=v1.0.0__
 
 ----
 
@@ -23,7 +24,7 @@ file of this repo.
 Before using this application Python 3.x must be installed.
 
 To install Python go to https://www.python.org/downloads/.  
-Click __Download Python 3.???__ and follow the installation instructions.
+Click __Download Python >=3.7.1__ and follow the installation instructions.
 
 Use the requirements.txt file to install any modules you may be missing.
 ```bash
