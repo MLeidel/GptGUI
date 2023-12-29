@@ -223,6 +223,10 @@ class Application(Frame):
             query = " ".join(sys.argv[1:])
             self.query.insert("1.0", query)
             self.on_submit()
+        else:
+            self.txt.delete("1.0", END)
+            self.txt.insert("1.0", "Ctrl-h for help")
+
 
 #----------------------------------------------------------------------
 
