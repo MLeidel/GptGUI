@@ -8,6 +8,7 @@ import subprocess
 from tkinter.font import Font
 from ttkbootstrap import *
 from ttkbootstrap.constants import *
+from ttkbootstrap.tooltip import ToolTip
 from ttkbootstrap.dialogs import Querybox
 from tkinter import filedialog
 from tkinter import messagebox
@@ -135,8 +136,8 @@ class Application(Frame):
 
         self.vent_gptkey = StringVar()
         # self.vent_gptkey.trace("w", self.eventHandler)
-        ent_gptkey = Entry(self, textvariable=self.vent_gptkey, width=30)
-        ent_gptkey.grid(row=10, column=2, sticky='w', pady=4, padx=4)
+        self.ent_gptkey = Entry(self, textvariable=self.vent_gptkey, width=30)
+        self.ent_gptkey.grid(row=10, column=2, sticky='w', pady=4, padx=4)
 
         self.vcb = IntVar()
         cb = Checkbutton(self, variable=self.vcb, text='Check to show in output')
@@ -186,6 +187,12 @@ class Application(Frame):
         self.vent_size.set(MySize)
         self.vent_edit.set(MyEditor)
         self.vent_file.set(MyFile)
+
+        ToolTip(self.ent_gptkey,
+                text="Env Var or Key Literal",
+                bootstyle=(INFO, INVERSE),
+                wraplength=140)
+
 
     def browse_path(self):
         ''' browse with filedialog for directory '''
