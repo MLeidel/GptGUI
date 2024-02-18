@@ -266,7 +266,7 @@ class Application(Frame):
 
             # display Gpt response in Text widget
 
-            output = response.choices[0].message.content
+            output = response.choices[0].message.content + "\n\n"
             # collect response token info
             self.length = len(output)
             self.completion = response.usage.completion_tokens
