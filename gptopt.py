@@ -115,10 +115,11 @@ class Application(Frame):
 
         self.vcmbo_model = StringVar()
         cmbo_model = Combobox(self, textvariable=self.vcmbo_model, width=20)
-        cmbo_model['values'] = ('gpt-3.5-turbo',
-                                'gpt-3.5-turbo-1106',
-                                'gpt-4-1106-preview',
-                                'gpt-4')
+        cmbo_model['values'] = ('gpt-4o',
+                                'gpt-4-turbo',
+                                'gpt-4',
+                                'gpt-3.5-turbo')
+
         # ent_model.current(0)
         cmbo_model.grid(row=7, column=2, sticky='w', pady=4, padx=4)
         cmbo_model.bind('<<ComboboxSelected>>', self.onComboSelect)
