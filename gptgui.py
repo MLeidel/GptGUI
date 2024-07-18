@@ -129,7 +129,7 @@ class Application(Frame):
 
         self.sub = Button(btn_frame,
                      text='Submit Query (Ctrl-g)',
-                     command=self.on_submit, width=35)
+                     command=self.on_submit, width=20)
         self.sub.grid(row=1, column=9, sticky='w',
                    pady=(5, 0), padx=(20, 0))
 
@@ -602,7 +602,7 @@ else:
     root.geometry("675x505") # WxH+left+top
 
 root.protocol("WM_DELETE_WINDOW", save_location)  # TO SAVE GEOMETRY INFO
-root.minsize(875, 325)  # width, height
+root.minsize(790, 325)  # width, height
 Sizegrip(root).place(rely=1.0, relx=1.0, x=0, y=0, anchor='se')
 
 Application(root)
