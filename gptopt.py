@@ -1,6 +1,6 @@
 '''
 code file: gptopt.py
-3-15-23 - Add gpt-3.5-turbo
+8-9-2024 edit gptgui.ini in editor
 '''
 import os, sys
 import configparser
