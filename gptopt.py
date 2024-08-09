@@ -13,12 +13,6 @@ from ttkbootstrap.dialogs import Querybox
 from tkinter import filedialog
 from tkinter import messagebox
 
-## for subprocess to exec gptopt.py
-PY = "python3"  # Linux
-GPTGUI = "gptgui.py"
-# PY = "pythonw"  # Windows
-# GPTGUI = "gptgui.pyw"
-
 class Application(Frame):
     ''' main class docstring '''
     def __init__(self, parent):
@@ -115,11 +109,7 @@ class Application(Frame):
 
         self.vcmbo_model = StringVar()
         cmbo_model = Combobox(self, textvariable=self.vcmbo_model, width=20)
-        cmbo_model['values'] = ('gpt-4o-mini',
-                                'gpt-4o',
-                                'gpt-4-turbo',
-                                'gpt-4',
-                                'gpt-3.5-turbo')
+        cmbo_model['values'] = (MyModels)
 
         # ent_model.current(0)
         cmbo_model.grid(row=7, column=2, sticky='w', pady=4, padx=4)
@@ -161,6 +151,8 @@ class Application(Frame):
         end_file = Entry(self, textvariable=self.vent_file)
         end_file.grid(row=15, column=2, sticky='w', pady=4, padx=4)
 
+        # RIGHT SIDE
+
         btn_path = Button(self, text='Browse', command=self.browse_path)
         btn_path.grid(row=2, column=3, pady=4, padx=4)
 
@@ -169,6 +161,9 @@ class Application(Frame):
 
         btn_gfont = Button(self, text='Choose', command=self.browse_font2)
         btn_gfont.grid(row=5, column=3, pady=4, padx=4)
+
+        btn_models = Button(self, text='Edit', command=self.edit_models)
+        btn_models.grid(row=7, column=3, pady=4, padx=4)
 
         btn_close = Button(self, text='Save & Close', command=self.on_close)
         btn_close.grid(row=15, column=3, pady=4, padx=4)
@@ -192,8 +187,23 @@ class Application(Frame):
 
         ToolTip(self.ent_gptkey,
                 text="Env Var or Key Literal",
-                bootstyle=(INFO, INVERSE),
-                wraplength=140)
+                bootstyle=(INFO, INVERSE))
+
+        ToolTip(btn_models,
+                text="Edit gptgui.ini\nin text editor",
+                bootstyle=(INFO, INVERSE))
+
+
+    def edit_models(self):
+        ''' use MyEditor to edit gptgui.ini file
+            Notify user that the Options window will close '''
+        result = messagebox.askyesno("Attension",
+                            "Options will Close.\nSave any changes first?")
+        subprocess.Popen([MyEditor, "gptgui.ini"])
+        if result:
+            self.on_close()
+        else:
+            root.destroy()
 
 
     def browse_path(self):
@@ -266,6 +276,10 @@ MySave = config['Main']['autosave']
 MySize = config['Main']['top_frame']
 MyEditor = config['Main']['editor']
 MyFile = config['Main']['tempfile']
+mods = config['Models']['list']
+MyModels = mods.split(',')
+MyModels = [s.strip() for s in MyModels]
+
 
 # change working directory to path for this file
 p = os.path.realpath(__file__)
