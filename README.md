@@ -1,11 +1,11 @@
 # GptGUI
-### Python GUI to access Gpt Engine with OpenAI v1.3.3
+### Python GUI to access Gpt Engine with OpenAI
 
 ___Handles current specs for:___
 -  gpt-3.5-turbo 
 -  gpt-3.5-turbo-1106 
 -  gpt-4-1106-preview 
--  gpt-4 
+-  gpt-4o
 
 see https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo  
 for modle parameters  
