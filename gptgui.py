@@ -13,6 +13,7 @@ import configparser
 import subprocess
 import webbrowser
 import markdown
+import platform
 from tkinter.font import Font
 from tkinter import messagebox
 from ttkbootstrap import *
@@ -20,10 +21,6 @@ from ttkbootstrap.constants import *
 from ttkbootstrap.tooltip import ToolTip
 import datetime
 from openai import OpenAI
-
-# for subprocess to exec gptopt.py
-PY = "python3"  # Linux
-# PY = "pythonw"  # Windows
 
 class Application(Frame):
     ''' main class docstring '''
@@ -359,7 +356,10 @@ class Application(Frame):
 
     def options(self, e=None):
         ''' Launch Options program and exit this program '''
-        subprocess.call([PY, "gptopt.py"])
+        if platform.system() == "Windows":
+            subprocess.call(["pythonw.exe", "gptopt.py"])
+        else:
+            subprocess.call(["python3", "gptopt.py"])
         # re-read configuration
         config = configparser.ConfigParser()
         config.read('gptgui.ini')
