@@ -38,8 +38,6 @@ class Application(Frame):
         self.MyFntGptF = config['Main']['fontgptfam']
         self.MyFntGptZ = config['Main']['fontgptsiz']
         self.MyModel = config['Main']['engine']
-        self.MyTemp = config['Main']['temperature']
-        self.MyTokens = config['Main']['tokens']
         self.MyKey = config['Main']['gptkey']
         self.MyTime = config['Main']['showtime']
         self.MySave = config['Main']['autosave']
@@ -254,9 +252,7 @@ class Application(Frame):
         try:
             response = client.chat.completions.create(
                 model=self.MyModel,
-                max_tokens=int(self.MyTokens),
-                temperature=float(self.MyTemp),
-                messages=[{"role": "system", "content": self.MySystem},
+                messages=[{"role": "user", "content": self.MySystem},
                     {"role": "user", "content" : querytext.strip()}
                 ]
             )
@@ -370,8 +366,6 @@ class Application(Frame):
         self.MyFntGptF = config['Main']['fontgptfam']
         self.MyFntGptZ = config['Main']['fontgptsiz']
         self.MyModel = config['Main']['engine']
-        self.MyTemp = config['Main']['temperature']
-        self.MyTokens = config['Main']['tokens']
         self.MyKey = config['Main']['gptkey']
         self.MyTime = config['Main']['showtime']
         self.MySave = config['Main']['autosave']
@@ -388,7 +382,7 @@ class Application(Frame):
         self.txt.configure(font=efont)
         style = Style()
         style = Style(theme=self.MyTheme)
-        MyTitle = "GptGUI (OpenAI) " + self.MyModel + " " + str(self.MyTokens) + " " + str(self.MyTemp)
+        MyTitle = "GptGUI (OpenAI) " + self.MyModel
         root.title(MyTitle)
 
 
@@ -430,12 +424,11 @@ class Application(Frame):
         ''' open txt (MD) in your text editor '''
         text = self.getmdtext()
         filename = os.getcwd() + '/' + self.MyFile
-        print(filename)
         with open(filename, 'w') as f:
             f.write(text)
-        print(filename, self.MyEditor)
-        subprocess.Popen([self.MyEditor, filename])
-
+        print(self.MyEditor, filename)
+        # subprocess.Popen([self.MyEditor, filename])
+        os.system(self.MyEditor + " " + filename)
 
     def on_md_render(self, e=None):
         ''' render txt (MD) to html and show window '''
@@ -582,11 +575,9 @@ config = configparser.ConfigParser()
 config.read('gptgui.ini')
 MyTheme = config['Main']['theme']
 MyModel = config['Main']['engine']
-MyTemp = config['Main']['temperature']
-MyTokens = config['Main']['tokens']
 
 # define main window
-MyTitle = "GptGUI (OpenAI 1.3.3) " + MyModel + " " + str(MyTokens)
+MyTitle = "GptGUI (OpenAI 1.3.3) " + MyModel
 root = Window(MyTitle, MyTheme, iconphoto="icon.png")
 
 # change working directory to path for this file

@@ -43,11 +43,11 @@ class Application(Frame):
         lbl = Label(self, text='Engine')
         lbl.grid(row=7, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Temperature')
-        lbl.grid(row=8, column=1, sticky='e', pady=4, padx=4)
+        # lbl = Label(self, text='Temperature')
+        # lbl.grid(row=8, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Tokens')
-        lbl.grid(row=9, column=1, sticky='e', pady=4, padx=4)
+        # lbl = Label(self, text='Tokens')
+        # lbl.grid(row=9, column=1, sticky='e', pady=4, padx=4)
 
         lbl = Label(self, text='Gpt Key')
         lbl.grid(row=10, column=1, sticky='e', pady=4, padx=4)
@@ -115,16 +115,16 @@ class Application(Frame):
         cmbo_model.grid(row=7, column=2, sticky='w', pady=4, padx=4)
         cmbo_model.bind('<<ComboboxSelected>>', self.onComboSelect)
 
-        self.vcmbo_temp = StringVar()
-        cmbo_temp = Combobox(self, textvariable=self.vcmbo_temp, width=6)
-        cmbo_temp['values'] = ('0.7', '0.8', '0.9', '1.0', '1.2')
-        # COMBO.bind('<<ComboboxSelected>>', self.ONCOMBOSELECT)
-        # ent_model.current(0)
-        cmbo_temp.grid(row=8, column=2, sticky='w', pady=4, padx=4)
+        # self.vcmbo_temp = StringVar()
+        # cmbo_temp = Combobox(self, textvariable=self.vcmbo_temp, width=6)
+        # cmbo_temp['values'] = ('0.7', '0.8', '0.9', '1.0', '1.2')
+        # # COMBO.bind('<<ComboboxSelected>>', self.ONCOMBOSELECT)
+        # # ent_model.current(0)
+        # cmbo_temp.grid(row=8, column=2, sticky='w', pady=4, padx=4)
 
-        self.vent_token = StringVar()
-        ent_token = Entry(self, textvariable=self.vent_token, width=6)
-        ent_token.grid(row=9, column=2, sticky='w', pady=4, padx=4)
+        # self.vent_token = StringVar()
+        # ent_token = Entry(self, textvariable=self.vent_token, width=6)
+        # ent_token.grid(row=9, column=2, sticky='w', pady=4, padx=4)
 
         self.vent_gptkey = StringVar()
         # self.vent_gptkey.trace("w", self.eventHandler)
@@ -177,8 +177,6 @@ class Application(Frame):
         self.vent_fgsiz.set(MyFntGptZ)
         self.vent_gptkey.set(MyKey)
         self.vcmbo_model.set(MyModel)
-        self.vcmbo_temp.set(MyTemp)
-        self.vent_token.set(MyTokens)
         self.vcb.set(MyTime)
         self.vcv.set(MySave)
         self.vent_size.set(MySize)
@@ -245,8 +243,6 @@ class Application(Frame):
         config['Main']['theme'] = self.vent_theme.get()
         config['Main']['path'] = self.vent_path.get()
         config['Main']['engine'] = self.vcmbo_model.get()
-        config['Main']['temperature'] = self.vcmbo_temp.get()
-        config['Main']['tokens'] = self.vent_token.get()
         config['Main']['showtime'] = str(self.vcb.get())
         config['Main']['autosave'] = str(self.vcv.get())
         config['Main']['top_frame'] = str(self.vent_size.get())
@@ -268,8 +264,6 @@ MyFntQryZ = config['Main']['fontqrysiz']
 MyFntGptF = config['Main']['fontgptfam']
 MyFntGptZ = config['Main']['fontgptsiz']
 MyModel = config['Main']['engine']
-MyTemp = config['Main']['temperature']
-MyTokens = config['Main']['tokens']
 MyKey = config['Main']['gptkey']
 MyTime = config['Main']['showtime']
 MySave = config['Main']['autosave']
