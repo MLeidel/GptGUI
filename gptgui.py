@@ -331,7 +331,9 @@ class Application(Frame):
 
 
     def on_view_file(self):
-        ''' View the user saved queries file '''
+        ''' View the user saved queries file.
+            Convert the save query file to html
+            and send to default browser. '''
         if not os.path.isfile(self.MyPath):
             messagebox.showwarning(self.MyPath, "Empty - No File")
             return
@@ -348,7 +350,6 @@ class Application(Frame):
         with open(self.MyPath, "r") as fin:
             self.txt.insert("1.0", fin.read())
         self.query.delete("1.0", END)
-
 
     def options(self, e=None):
         ''' Launch Options program and exit this program '''
@@ -435,10 +436,9 @@ class Application(Frame):
         text = self.getmdtext()
         # convert MD to HTML
         H = markdown.markdown(text,
-                              extensions=['fenced_code'])
+                              extensions=['tables','fenced_code'])
         # write to file
         filename = os.getcwd() + '/' + self.MyFile + '.html'
-        print(filename)
         with open(filename, 'w') as f:
             f.write(H)
         # open file in browser
