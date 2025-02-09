@@ -94,43 +94,60 @@ class Application(Frame):
         btn_frame = Frame(self)
         btn_frame.grid(row=4, column=1, sticky='w')
 
-        self.clear = Button(btn_frame, text='Clear', command=self.on_clear_all)
+        self.clear = Button(btn_frame, text='Clear',
+                            command=self.on_clear_all,
+                            bootstyle=(OUTLINE))
         self.clear.grid(row=1, column=2, sticky='w',
                    pady=(5, 0), padx=(5, 7))
 
-        self.save = Button(btn_frame, text='Save', command=self.on_save_file)
+        self.save = Button(btn_frame, text='Save',
+                            command=self.on_save_file,
+                            bootstyle=(OUTLINE))
         self.save.grid(row=1, column=3, sticky='w',
                    pady=(5, 0), padx=5)
 
-        self.view = Button(btn_frame, text='View', command=self.on_view_file)
+        self.view = Button(btn_frame, text='View',
+                            command=self.on_view_file,
+                            bootstyle=(OUTLINE))
         self.view.grid(row=1, column=4, sticky='w',
                    pady=(5, 0))
 
-        self.purge = Button(btn_frame, text='Purge', command=self.on_purge)
+        self.purge = Button(btn_frame, text='Purge',
+                            command=self.on_purge,
+                            bootstyle=(OUTLINE))
         self.purge.grid(row=1, column=5, sticky='w',
                    pady=(5, 0), padx=5)
 
-        self.open = Button(btn_frame, text='Text', command=self.on_md_open)
+        self.open = Button(btn_frame, text='Text',
+                            command=self.on_md_open,
+                            bootstyle=(OUTLINE))
         self.open.grid(row=1, column=6, sticky='w',
                      pady=(5, 0), padx=5)
 
-        self.md = Button(btn_frame, text='Html', command=self.on_md_render)
+        self.md = Button(btn_frame, text='Html',
+                            command=self.on_md_render,
+                            bootstyle=(OUTLINE))
         self.md.grid(row=1, column=7, sticky='w',
                      pady=(5, 0), padx=(0, 5))
 
-        self.opts = Button(btn_frame, text='Options', command=self.options)
+        self.opts = Button(btn_frame, text='Options',
+                            command=self.options,
+                            bootstyle=(OUTLINE))
         self.opts.grid(row=1, column=8, sticky='w',
                    pady=(5, 0), padx=5)
 
         self.sub = Button(btn_frame,
-                     text='Submit Query (Ctrl-g)',
-                     command=self.on_submit, width=20)
+                            text='Submit Query (Ctrl-g)',
+                            command=self.on_submit, width=20,
+                            bootstyle=(OUTLINE))
         self.sub.grid(row=1, column=9, sticky='w',
                    pady=(5, 0), padx=(20, 0))
 
        # END BUTTON FRAME
 
-        cls = Button(self, text='Close', command=self.exit_program)
+        cls = Button(self, text='Close',
+                    command=self.exit_program,
+                    bootstyle=(OUTLINE))
         cls.grid(row=4, column=2, columnspan=2, sticky='e',
                  pady=(5,0), padx=5)
 
@@ -577,7 +594,7 @@ MyTheme = config['Main']['theme']
 MyModel = config['Main']['engine']
 
 # define main window
-MyTitle = "GptGUI (OpenAI 1.3.3) " + MyModel
+MyTitle = "GptGUI (OpenAI 1.35) " + MyModel
 root = Window(MyTitle, MyTheme, iconphoto="icon.png")
 
 # change working directory to path for this file
