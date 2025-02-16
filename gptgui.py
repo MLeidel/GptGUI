@@ -237,7 +237,7 @@ class Application(Frame):
             self.on_submit()
         else:
             self.txt.delete("1.0", END)
-            self.txt.insert("1.0", "Ctrl-h for help")
+            self.txt.insert("1.0", "Ctrl-h for help\n\nrole: " + self.MySystem)
 
 
 #----------------------------------------------------------------------
