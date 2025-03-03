@@ -265,6 +265,11 @@ class Application(Frame):
                        "Did you enter your Gpt Key?")
             return
 
+        # Display "Processing ..." on the response area
+        self.txt.delete("1.0", END)
+        self.txt.insert("1.0", "Processing ..." )
+        self.txt.update_idletasks()
+
         # openai API request code
         try:
             response = client.chat.completions.create(
