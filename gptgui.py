@@ -183,8 +183,8 @@ class Application(Frame):
 
 
         # Bindings
-        root.bind("<Control-t>", self.show_tokens)  # Show result tokens in title
-        root.bind("<Control-m>", self.on_toggle_time)  # time elapsed toggle
+        root.bind("<Control-m>", self.show_tokens)  # Show result tokens in title
+        root.bind("<Control-t>", self.on_toggle_time)  # time elapsed toggle
         root.bind("<Control-h>", self.on_kb_help)  # show hotkey help
         root.bind("<Control-q>", self.exit_program)  # Close button
         root.bind("<Control-s>", self.on_save_file)  # Save button
@@ -480,17 +480,15 @@ class Application(Frame):
     def on_kb_help(self, e=None):
         ''' display hot keys message '''
         msg = '''
-<Ctrl-t> View response metrics\n
-<Ctrl-m> Temporarily Toggle\n
-    show-elapsed-time\n
-<Ctrl-h> This HotKey help\n
-<Ctrl-q> Close Program\n
-    No Prompt\n
-<Ctrl-s> Save output (Button)\n
-<Ctrl-g> Submit Query (Button)\n
-<Ctrl-Enter> Submit & Append\n
-<Ctrl-Shift-S> Speak the Text\n
-<Escape> Cancel Speaking Text\n
+<Ctrl-m> Toggle view metrics
+<Ctrl-t> Toggle show lapsed time
+<Ctrl-h> HotKeys help
+<Ctrl-q> Exit Program
+<Ctrl-s> Save output (Button)
+<Ctrl-g> Submit Query (Button)
+<Ctrl-Enter> Submit & Append
+<Ctrl-Shift-S> Speak the Text
+<Escape> Cancel Speaking Text
         '''
         messagebox.showinfo("Hot Keys Help", msg)
 
