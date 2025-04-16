@@ -1,12 +1,9 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
 sendfile.py
 .gitignore
-getmd
 savequery.txt
 *.zip
 temp.*
-GptGUI.zip
 winfo
 README.html
 bkup_*
