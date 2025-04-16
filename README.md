@@ -2,10 +2,7 @@
 ### Python GUI to access Gpt Engine with OpenAI
 
 ___Handles current specs for:___
--  gpt-3.5-turbo 
--  gpt-3.5-turbo-1106 
--  gpt-4-1106-preview 
--  gpt-4o
+-  gpt-4o and others
 
 see https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo  
 for modle parameters  
@@ -109,6 +106,8 @@ Set up the name of your text editor in the options.
 |__Ctrl-Enter__ | Submit Query & Append to existing text|
 |__Ctrl-Shift-S__ | Speak the Query Response Text|
 |__Escape__ | Cancel Speaking the Text|
+|__Ctrl-f__| Find text |
+|__Ctrl-n__| Find next text |
 
 
 ---
@@ -119,12 +118,6 @@ There is a context (Right-Click) menu for convenience.
 The height of the query text area (top frame) can be lengthened
 or shortened by in this menu.
 
-### How to use the code-davinci-002	Codex model
-
-Read about this here: https://platform.openai.com/docs/models/codex
-
-For GptGUI the top frame acts as the _instructions_ frame and the bottom
-frame acts as the _input_ frame.
-
 ----
+
 END

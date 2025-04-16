@@ -16,6 +16,7 @@ import markdown
 import platform
 from tkinter.font import Font
 from tkinter import messagebox
+from tkinter import simpledialog
 from ttkbootstrap import *
 from ttkbootstrap.constants import *
 from ttkbootstrap.tooltip import ToolTip
@@ -192,6 +193,8 @@ class Application(Frame):
         root.bind("<Control-Return>", self.on_submit)  # Submit Query button
         root.bind("<Control-Shift-S>", self.speak_text)  # speak query response
         root.bind("<Escape>", self.speak_text_cancel)  # stop speaking
+        root.bind("<Control-f>", self.find_text)
+        root.bind("<Control-n>", self.find_next)
 
 
         # ToolTips
@@ -238,6 +241,13 @@ class Application(Frame):
         else:
             self.txt.delete("1.0", END)
             self.txt.insert("1.0", "Ctrl-h for help\n\nrole: " + self.MySystem)
+            # Variable to store the current search term and the index of the last found match.
+            self.search_term = None
+            self.last_found_index = "1.0"
+
+            # Create a tag to highlight the search result.
+            self.txt.tag_config("highlight", background="yellow", foreground="black")
+
 
 
 #----------------------------------------------------------------------
@@ -489,6 +499,8 @@ class Application(Frame):
 <Ctrl-Enter> Submit & Append
 <Ctrl-Shift-S> Speak the Text
 <Escape> Cancel Speaking Text
+<Ctrl-f> Find Text
+<Ctrl-n> Find Next Text
         '''
         messagebox.showinfo("Hot Keys Help", msg)
 
@@ -558,6 +570,50 @@ class Application(Frame):
             if self.txt.tag_ranges("sel"):  # append new value to clipbaord
                 root.clipboard_append(self.txt.selection_get())
                 self.txt.tag_remove(SEL, "1.0", END)
+
+    def find_text(self, event=None):
+        ''' Ask the user for the text to search
+            then find and highlight the text if found.'''
+        term = simpledialog.askstring("Find", "Enter text to search:")
+        if term:
+            self.search_term = term
+            # Remove any previous highlights.
+            self.txt.tag_remove("highlight", "1.0", tk.END)
+            # Start searching from the beginning.
+            self.last_found_index = "1.0"
+            pos = self.txt.search(self.search_term, self.last_found_index, stopindex=tk.END)
+            if pos:
+                # Highlight the found text.
+                end_pos = f"{pos}+{len(self.search_term)}c"
+                self.txt.tag_add("highlight", pos, end_pos)
+                # Adjust the view to make the found text visible.
+                self.txt.see(pos)
+                # Store the ending position for finding the next match.
+                self.last_found_index = end_pos
+            else:
+                messagebox.showinfo("Result", "No matches found.")
+        return "break"  # Prevent the default behavior.
+
+
+    def find_next(self, event=None):
+        ''' Search for next occurrence of text in response text area (self.txt) '''
+        if not self.search_term:
+            return self.find_text()
+
+        pos = self.txt.search(self.search_term, self.last_found_index, stopindex=tk.END)
+        if pos:
+            # Remove previous highlights so only the current match is highlighted.
+            self.txt.tag_remove("highlight", "1.0", tk.END)
+            end_pos = f"{pos}+{len(self.search_term)}c"
+            self.txt.tag_add("highlight", pos, end_pos)
+            self.txt.see(pos)
+            # Update the last found index.
+            self.last_found_index = end_pos
+        else:
+            messagebox.showinfo("Result", "No more matches found.")
+            self.txt.tag_remove("highlight", "1.0", tk.END)
+        return "break"  # Prevent the default behavior.
+
 
     def exit_program(self, e=None):
         ''' Only exit program without prompt if
