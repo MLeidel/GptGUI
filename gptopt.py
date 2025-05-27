@@ -67,6 +67,9 @@ class Application(Frame):
         lbl = Label(self, text='Temp file name')
         lbl.grid(row=15, column=1, sticky='e', pady=4, padx=4)
 
+        lbl = Label(self, text='Role Prompt')
+        lbl.grid(row=16, column=1, sticky='e', pady=4, padx=4)
+
         self.vent_theme = StringVar()
         ent_theme = Combobox(self, textvariable=self.vent_theme, width=10)
         ent_theme['values'] = ('darkly',
@@ -151,6 +154,10 @@ class Application(Frame):
         end_file = Entry(self, textvariable=self.vent_file)
         end_file.grid(row=15, column=2, sticky='w', pady=4, padx=4)
 
+        self.vent_role = StringVar()
+        ent_role = Entry(self, textvariable=self.vent_role, width=30)
+        ent_role.grid(row=16, column=2, sticky='w', pady=4, padx=4)
+
         # RIGHT SIDE
 
         btn_path = Button(self, text='Browse', command=self.browse_path)
@@ -182,6 +189,7 @@ class Application(Frame):
         self.vent_size.set(MySize)
         self.vent_edit.set(MyEditor)
         self.vent_file.set(MyFile)
+        self.vent_role.set(MyRole)
 
         ToolTip(self.ent_gptkey,
                 text="Env Var or Key Literal",
@@ -248,6 +256,7 @@ class Application(Frame):
         config['Main']['top_frame'] = str(self.vent_size.get())
         config['Main']['editor'] = str(self.vent_edit.get())
         config['Main']['tempfile'] = str(self.vent_file.get())
+        config['Main']['system'] = str(self.vent_role.get())
 
         with open('gptgui.ini', 'w') as configfile:
             config.write(configfile)
@@ -270,6 +279,7 @@ MySave = config['Main']['autosave']
 MySize = config['Main']['top_frame']
 MyEditor = config['Main']['editor']
 MyFile = config['Main']['tempfile']
+MyRole = config['Main']['system']
 mods = config['Models']['list']
 MyModels = mods.split(',')
 MyModels = [s.strip() for s in MyModels]
