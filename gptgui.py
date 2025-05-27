@@ -347,10 +347,10 @@ class Application(Frame):
         try:
             msg = "  \ncompletion tokens: " + str(self.completion) + \
                   "  \ntotal tokens: " + str(self.total) + \
-                  "  \nprompt tokens: " + str(self.prompt) + "\n-----\n"
+                  "  \nprompt tokens: " + str(self.prompt) + "\n\n"
             with open(self.MyPath, "a") as fout:
-                fout.write(str(now.strftime("%Y-%m-%d %H:%M  \n")))
-                fout.write(qury + "  \nengine: " + MyModel)
+                fout.write("#" + str(now.strftime("%Y-%m-%d %H:%M  \n\n")))
+                fout.write(qury + "  \n\nengine: " + MyModel)
                 fout.write(msg)
                 fout.write(resp.strip() + "\n\n---\n\n")
         except Exception as e:
@@ -381,6 +381,7 @@ class Application(Frame):
         self.txt.delete("1.0", END)
         with open(self.MyPath, "r") as fin:
             self.txt.insert("1.0", fin.read())
+        self.txt.see(END)
         self.query.delete("1.0", END)
 
     def options(self, e=None):
