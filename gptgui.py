@@ -5,10 +5,10 @@ remarks:
     modified API for openai >=1.3.3
 
 '''
+import openvoc
 import os
 import sys
 import time
-import signal
 import configparser
 import subprocess
 import webbrowser
@@ -192,7 +192,7 @@ class Application(Frame):
         root.bind("<Control-g>", self.on_submit)  # Submit Query button
         root.bind("<Control-Return>", self.on_submit)  # Submit Query button
         root.bind("<Control-Shift-S>", self.speak_text)  # speak query response
-        root.bind("<Escape>", self.speak_text_cancel)  # stop speaking
+#        root.bind("<Escape>", self.speak_text_cancel)  # stop speaking
         root.bind("<Control-f>", self.find_text)
         root.bind("<Control-n>", self.find_next)
 
@@ -349,6 +349,7 @@ class Application(Frame):
                   "  \ntotal tokens: " + str(self.total) + \
                   "  \nprompt tokens: " + str(self.prompt) + "\n\n"
             with open(self.MyPath, "a") as fout:
+                fout.write("~~~~~~~~~~~~~~~~~~\n")
                 fout.write("#" + str(now.strftime("%Y-%m-%d %H:%M  \n\n")))
                 fout.write(qury + "  \n\nengine: " + MyModel)
                 fout.write(msg)
@@ -481,25 +482,22 @@ class Application(Frame):
     def speak_text(self, e=None):
         ''' Speak the query response text '''
         text = self.getmdtext()  # get selected or all text
-        self.espeak_proc = subprocess.Popen(["espeak-ng", text])
-
-    def speak_text_cancel(self, e=None):
-        ''' cancel the currently speaking text '''
-        self.espeak_proc.send_signal(signal.SIGINT)
+        x = openvoc.textospeech('nova', 'mp3', 'gptgui.mp3', text)
+        if x != 0:
+            messagebox.showerror("OpenVOC Error", "There is a problem with the voice file")
 
 
     def on_kb_help(self, e=None):
         ''' display hot keys message '''
         msg = '''
 <Ctrl-m> Toggle view metrics
-<Ctrl-t> Toggle show lapsed time
+<Ctrl-t> Toggle show time
 <Ctrl-h> HotKeys help
 <Ctrl-q> Exit Program
-<Ctrl-s> Save output (Button)
-<Ctrl-g> Submit Query (Button)
+<Ctrl-s> Save output
+<Ctrl-g> Submit Query
 <Ctrl-Enter> Submit & Append
 <Ctrl-Shift-S> Speak the Text
-<Escape> Cancel Speaking Text
 <Ctrl-f> Find Text
 <Ctrl-n> Find Next Text
         '''

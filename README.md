@@ -1,14 +1,14 @@
 # GptGUI
 ### Python GUI to access Gpt Engine with OpenAI
 
-___Handles current specs for:___
--  gpt-4o and others
+-  supports a variety of OpenAI models
+-  choose from many themes
+-  convert responses to HTML or VOICE
+-  maintains a log of reponses
 
-see https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo  
-for modle parameters  
+see https://platform.openai.com/docs for model information
 
-_make sure to pip install the latest __openai__ module_  
-__NOTE: Uses OpenAI module >=v1.0.0__
+_make sure to pip install the latest **openai** module_  
 
 ----
 
@@ -36,12 +36,6 @@ There is no cost to do so.
 
 ___
 
-(For Text to Speech feature) please install:
-- __espeak-ng__  
-  see: https://github.com/espeak-ng/espeak-ng/blob/master/docs/guide.md
-  
----
-
 After starting the app the first time click the _Options_
 button.
 
@@ -50,7 +44,6 @@ A better way to handle your API key is to set it up as a System Environment Vari
 Then put the variable's name into the "Gpt Key" entry box.
 
 Change any other appearance or Gpt options as well.  
-Then click the _Save & Close_ button.
 
 ## gptgui.ini
 
@@ -70,7 +63,8 @@ If you prefer you could change the settings with a text editor.
 Input your query in the top box, and hit __"Submit Query"__ or _Ctrl-g_.  
 The Gpt AI response will appear in the larger box below.
 
-The buttons:
+**The buttons**:  
+
 - Clear
 > Clears the query (top frame) and the response area (bottom frame).
 - Save
@@ -105,7 +99,6 @@ Set up the name of your text editor in the options.
 |__Ctrl-g__| Submit Query (Button)|
 |__Ctrl-Enter__ | Submit Query & Append to existing text|
 |__Ctrl-Shift-S__ | Speak the Query Response Text|
-|__Escape__ | Cancel Speaking the Text|
 |__Ctrl-f__| Find text |
 |__Ctrl-n__| Find next text |
 
