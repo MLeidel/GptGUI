@@ -1,12 +1,12 @@
-# GptGUI 2
+# GptGUI-2
 
 ### Python GUI to access Gpt Engine with OpenAI
 
--  Temporary Chat mode
--  supports a variety of OpenAI models
--  choose from many themes
--  convert responses to HTML or VOICE
--  maintains a log of reponses
+-  Temporary Chat Mode
+-  Supports a variety of OpenAI models
+-  Choose from many themes
+-  Convert responses to HTML or VOICE
+-  Maintains a log of reponses
 
 see https://platform.openai.com/docs for model information
 
@@ -38,20 +38,16 @@ ___
 
 You will also have to Sign Up at https://openai.com/api/ and __create
 an API Key__.  
-There is no cost to do so.
+There is no cost to do so.  
+You should configure your key with an Environment Variable and use that
+Variable name in the options.
 
 ___
 
 After starting the app the first time click the _Options_
-button.
+button. Change any other options that would work better on your system or preferences.
 
-Copy and past your API key into the "Gpt Key" entry box.  
-A better way to handle your API key is to set it up as a System Environment Variable.  
-Then put the variable's name into the "Gpt Key" entry box.
-
-Change any other appearance or Gpt options as well.  
-
-## gptgui.ini
+## Options
 
 The options are stored in a plain text file called _gptgui.ini_.  
 If you prefer you could change the settings with a text editor.
@@ -66,29 +62,51 @@ If you prefer you could change the settings with a text editor.
 
 ![alttext](images/gptgui.png "Ctrl-t for Response Metrics")
 
-Input your query in the top box, and hit __"Submit Query"__ or _Ctrl-g_.  
+Type your prompt in the top box, and hit __"Submit Query"__ or _Ctrl-g_.  
 The Gpt AI response will appear in the larger box below.
 
-**The buttons**:  
-
-- New
+- **New**
 > Begins a new conversation
-- View
+- **View**
 > Displays the log file you set up in Options  
-- Purge
+- **Purge**
 > Clears the contens of the log file  
-- Text
+- **Text**
 > Opens the current response or selection in your text editor   
 Set up the name of your text editor in the options.
-- Html
+- **Html**
 > Opens the current response or selection in your default browser
 Converting Markdown to HTML
-- Options  
+- **Options**  
 > launches the Options editor program
-- Close
+- **Submit Query**
+> Submits prompt to OpenAI engine
+- **Close**
 > Exit the program. _Ctrl-q_ exits the program quickly.
 
 ---
+
+## Context menu
+
+There is a context (Right-Click) menu for convenience.
+The height of the query text area (top frame) can be lengthened
+or shortened with this menu.
+
+---
+
+## Operation
+
+At startup, if a previous conversation is detected the user is prompted
+to either continue or start a new conversation. So closing the app does
+not terminate a conversation. Also, to start a new conversatioin while
+the app is running use the 'New' button. Multiple conversations are not
+preserved anywhere, but will remain in the log until it is purged.
+GptGUI operates with other software on your system:
+
+    text editor
+    audio players
+    Internet browser
+    Python/tkinter and libraries
 
 ## Hot Keys
 
@@ -103,14 +121,6 @@ Converting Markdown to HTML
 |__Ctrl-F__| Find text |
 |__Ctrl-N__| Find next text |
 
-
----
-
-### Context menu
-
-There is a context (Right-Click) menu for convenience.
-The height of the query text area (top frame) can be lengthened
-or shortened with this menu.
 
 ----
 
