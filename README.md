@@ -1,6 +1,8 @@
-# GptGUI
+# GptGUI 2
+
 ### Python GUI to access Gpt Engine with OpenAI
 
+-  Temporary Chat mode
 -  supports a variety of OpenAI models
 -  choose from many themes
 -  convert responses to HTML or VOICE
@@ -17,16 +19,20 @@ _make sure to pip install the latest **openai** module_
 For Linux / Mac you can either _gh repo clone MLeidel/GptGUI_ or download a zip
 file of this repo.
 
-
 Before using this application Python 3.x must be installed.
 
 To install Python go to https://www.python.org/downloads/.  
-Click __Download Python >=3.7.1__ and follow the installation instructions.
+Click __Download Python__ and follow the installation instructions.
+`tkinter` is automatically installed with Python on Windows 
+For Linux tkinter is installed with: `apt install python3-tk`
 
 Use the requirements.txt file to install any modules you may be missing.
 ```bash
     pip3 install -r requirements.txt
 ```
+**Voice**
+For voice playback of the responses the `mpv` vidio player is required for Linux.  
+For voice playback on Windows OS no player is required but VLC is recommended.
 
 ___
 
@@ -65,23 +71,20 @@ The Gpt AI response will appear in the larger box below.
 
 **The buttons**:  
 
-- Clear
-> Clears the query (top frame) and the response area (bottom frame).
-- Save
-> Save the response from Gpt, with the query, into your _save_ file
-that you set up in gptgui.ini. Also you can turn on _Auto Save_ in
-the options which automatically saves each query/response.
+- New
+> Begins a new conversation
 - View
-> Displays the _save_ file you set up in Options (gptgui.ini).
+> Displays the log file you set up in Options  
 - Purge
-> Clears the contens of the _save_ file.
+> Clears the contens of the log file  
 - Text
-> Opens the current response or selection in your text editor.  
+> Opens the current response or selection in your text editor   
 Set up the name of your text editor in the options.
 - Html
-> Opens the current response or selection in your default browser.
-- Options
-> launches the Options editor program.
+> Opens the current response or selection in your default browser
+Converting Markdown to HTML
+- Options  
+> launches the Options editor program
 - Close
 > Exit the program. _Ctrl-q_ exits the program quickly.
 
@@ -91,16 +94,14 @@ Set up the name of your text editor in the options.
 
 | key | action |
 | :--- | :--- |
-|__Ctrl-t__| View response metrics|
-|__Ctrl-m__| Toggle show-elapsed-time temporarily|
-|__Ctrl-h__| This HotKey help|
-|__Ctrl-q__| Close Program No Prompt|
-|__Ctrl-s__| Save output (Button)|
-|__Ctrl-g__| Submit Query (Button)|
-|__Ctrl-Enter__ | Submit Query & Append to existing text|
-|__Ctrl-Shift-S__ | Speak the Query Response Text|
-|__Ctrl-f__| Find text |
-|__Ctrl-n__| Find next text |
+|__Ctrl-H__| This HotKey help|
+|__Ctrl-Q__| Close Program No Prompt|
+|__Ctrl-Shift-S__| Speak the Currrent Text|
+|__Ctrl-Shift_T__| Toggle Speech|
+|__Ctrl-G__| Submit Query (Button)|
+|__Ctrl-Enter__ | same as Ctrl-g|
+|__Ctrl-F__| Find text |
+|__Ctrl-N__| Find next text |
 
 
 ---
@@ -109,7 +110,7 @@ Set up the name of your text editor in the options.
 
 There is a context (Right-Click) menu for convenience.
 The height of the query text area (top frame) can be lengthened
-or shortened by in this menu.
+or shortened with this menu.
 
 ----
 

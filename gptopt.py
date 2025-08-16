@@ -25,37 +25,31 @@ class Application(Frame):
         lbl = Label(self, text='Theme')
         lbl.grid(row=1, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Save File Path')
+        lbl = Label(self, text='Log File')
         lbl.grid(row=2, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Font Query Family')
+        lbl = Label(self, text='Font Prompt Text')
         lbl.grid(row=3, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Font Query Size')
+        lbl = Label(self, text='Font Prompt Size')
         lbl.grid(row=4, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Font Gpt Family')
+        lbl = Label(self, text='Font Response Text')
         lbl.grid(row=5, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Font Gpt Size')
+        lbl = Label(self, text='Font Response Size')
         lbl.grid(row=6, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Engine')
+        lbl = Label(self, text='Model')
         lbl.grid(row=7, column=1, sticky='e', pady=4, padx=4)
 
-        # lbl = Label(self, text='Temperature')
-        # lbl.grid(row=8, column=1, sticky='e', pady=4, padx=4)
-
-        # lbl = Label(self, text='Tokens')
-        # lbl.grid(row=9, column=1, sticky='e', pady=4, padx=4)
-
-        lbl = Label(self, text='Gpt Key')
+        lbl = Label(self, text='OpenAI Key')
         lbl.grid(row=10, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Time Elapsed')
+        lbl = Label(self, text='Text Color')
         lbl.grid(row=11, column=1, sticky='e', pady=4, padx=4)
 
-        lbl = Label(self, text='Auto Save')
+        lbl = Label(self, text='Voice')
         lbl.grid(row=12, column=1, sticky='e', pady=4, padx=4)
 
         lbl = Label(self, text='Top Frame Size')
@@ -118,29 +112,29 @@ class Application(Frame):
         cmbo_model.grid(row=7, column=2, sticky='w', pady=4, padx=4)
         cmbo_model.bind('<<ComboboxSelected>>', self.onComboSelect)
 
-        # self.vcmbo_temp = StringVar()
-        # cmbo_temp = Combobox(self, textvariable=self.vcmbo_temp, width=6)
-        # cmbo_temp['values'] = ('0.7', '0.8', '0.9', '1.0', '1.2')
-        # # COMBO.bind('<<ComboboxSelected>>', self.ONCOMBOSELECT)
-        # # ent_model.current(0)
-        # cmbo_temp.grid(row=8, column=2, sticky='w', pady=4, padx=4)
-
-        # self.vent_token = StringVar()
-        # ent_token = Entry(self, textvariable=self.vent_token, width=6)
-        # ent_token.grid(row=9, column=2, sticky='w', pady=4, padx=4)
-
         self.vent_gptkey = StringVar()
         # self.vent_gptkey.trace("w", self.eventHandler)
         self.ent_gptkey = Entry(self, textvariable=self.vent_gptkey, width=30)
         self.ent_gptkey.grid(row=10, column=2, sticky='w', pady=4, padx=4)
 
-        self.vcb = IntVar()
-        cb = Checkbutton(self, variable=self.vcb, text='Check to show in output')
-        cb.grid(row=11, column=2, sticky=W, padx=5, pady=5)
+        self.vent_color = StringVar()
+        self.ent_color = Entry(self, textvariable=self.vent_color, width=15)
+        self.ent_color.grid(row=11, column=2, sticky='w', pady=4, padx=4)
 
-        self.vcv = IntVar()
-        cb = Checkbutton(self, variable=self.vcv, text='Check to turn on')
-        cb.grid(row=12, column=2, sticky=W, padx=5, pady=5)
+        self.vent_voice = StringVar()
+        ent_voice = Combobox(self, textvariable=self.vent_voice, width=10)
+        ent_voice['values'] = ( 'alloy',
+                                'ash',
+                                'ballad',
+                                'coral',
+                                'echo',
+                                'fable',
+                                'nova',
+                                'onyx',
+                                'sage',
+                                'shimmer')
+        ent_voice.current(0)
+        ent_voice.grid(row=12, column=2, sticky='w', pady=4, padx=4)
 
         self.vent_size = StringVar()
         ent_size = Entry(self, textvariable=self.vent_size, width=4)
@@ -155,7 +149,7 @@ class Application(Frame):
         end_file.grid(row=15, column=2, sticky='w', pady=4, padx=4)
 
         self.vent_role = StringVar()
-        ent_role = Entry(self, textvariable=self.vent_role, width=30)
+        ent_role = Entry(self, textvariable=self.vent_role, width=32)
         ent_role.grid(row=16, column=2, sticky='w', pady=4, padx=4)
 
         # RIGHT SIDE
@@ -184,8 +178,8 @@ class Application(Frame):
         self.vent_fgsiz.set(MyFntGptZ)
         self.vent_gptkey.set(MyKey)
         self.vcmbo_model.set(MyModel)
-        self.vcb.set(MyTime)
-        self.vcv.set(MySave)
+        self.vent_color.set(MyColor)
+        self.vent_voice.set(MyVoice)
         self.vent_size.set(MySize)
         self.vent_edit.set(MyEditor)
         self.vent_file.set(MyFile)
@@ -251,21 +245,19 @@ class Application(Frame):
         config['Main']['theme'] = self.vent_theme.get()
         config['Main']['path'] = self.vent_path.get()
         config['Main']['engine'] = self.vcmbo_model.get()
-        config['Main']['showtime'] = str(self.vcb.get())
-        config['Main']['autosave'] = str(self.vcv.get())
         config['Main']['top_frame'] = str(self.vent_size.get())
         config['Main']['editor'] = str(self.vent_edit.get())
         config['Main']['tempfile'] = str(self.vent_file.get())
         config['Main']['system'] = str(self.vent_role.get())
+        config['Main']['color'] = str(self.vent_color.get())
+        config['Main']['voice'] = str(self.vent_voice.get())
 
         with open('gptgui.ini', 'w') as configfile:
             config.write(configfile)
         root.destroy()
 
-
 config = configparser.ConfigParser()
 config.read('gptgui.ini')
-
 MyTheme = config['Main']['theme']
 MyPath = config['Main']['path']
 MyFntQryF = config['Main']['fontqryfam']
@@ -274,16 +266,15 @@ MyFntGptF = config['Main']['fontgptfam']
 MyFntGptZ = config['Main']['fontgptsiz']
 MyModel = config['Main']['engine']
 MyKey = config['Main']['gptkey']
-MyTime = config['Main']['showtime']
-MySave = config['Main']['autosave']
-MySize = config['Main']['top_frame']
 MyEditor = config['Main']['editor']
 MyFile = config['Main']['tempfile']
+MyVoice = config['Main']['voice']
+MyColor = config['Main']['color']
 MyRole = config['Main']['system']
+MySize = int(config['Main']['top_frame'])
 mods = config['Models']['list']
 MyModels = mods.split(',')
 MyModels = [s.strip() for s in MyModels]
-
 
 # change working directory to path for this file
 p = os.path.realpath(__file__)
