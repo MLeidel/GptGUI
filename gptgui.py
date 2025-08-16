@@ -57,28 +57,7 @@ class Application(Frame):
         # if len(self.MyKey) < 16:
         #     self.MyKey = os.environ.get(self.MyKey)  # Using ENV var instead of actual key string.
 
-        self.intro = f'''
-        Welcome to GptGUI 2
-            a GUI desktop AI client for conversing with
-            OpenAI's Large Language Models
-
-        Model: {self.MyModel}
-        role: {self.MySystem}
-        qheight: {self.TOPFRAME}
-        editor: {self.MyEditor}
-        voice: {self.MyVoice}
-        color: {self.MyColor}
-        font1: {self.MyFntQryF}
-        f1 size: {self.MyFntQryZ}
-        font2: {self.MyFntGptF}
-        f2 size: {self.MyFntGptZ}
-
-        A registered OpenAI API key is required
-        and set as a system environment variable
-
-        Use Ctrl-H for list of keyboard commands
-'''
-
+        self.set_intro()
         self.create_widgets()
 
     def create_widgets(self):
@@ -247,7 +226,7 @@ class Application(Frame):
 
 
         self.txt.delete("1.0", END)
-        self.txt.insert("1.0", self.intro)
+        self.txt.insert("1.0", self.set_intro())
 
         # Variable to store the current search term and the index of the last found match.
         self.search_term = None
@@ -280,6 +259,30 @@ class Application(Frame):
 
 #----------------------------------------------------------------------
 
+    def set_intro(self):
+        intro = f'''
+        Welcome to GptGUI 2
+            a GUI desktop AI client for conversing with
+            OpenAI's Large Language Models
+
+        Model: {self.MyModel}
+        role: {self.MySystem}
+        qheight: {self.TOPFRAME}
+        editor: {self.MyEditor}
+        voice: {self.MyVoice}
+        color: {self.MyColor}
+        font1: {self.MyFntQryF}
+        f1 size: {self.MyFntQryZ}
+        font2: {self.MyFntGptF}
+        f2 size: {self.MyFntGptZ}
+
+        A registered OpenAI API key is required
+        and set as a system environment variable
+
+        Use Ctrl-H for list of keyboard commands
+        '''
+        return intro
+
 
     def on_submit(self, event=None):
         ''' Event handler for Submit button (Ctrl-G). '''
@@ -301,7 +304,7 @@ class Application(Frame):
         if ai_text == "":
             self.query.delete("1.0", END)
             self.txt.delete("1.0", END)
-            self.txt.insert("1.0", self.intro)
+            self.txt.insert("1.0", self.set_intro())
             self.txt.tag_add('all_text', '1.0', 'end-1c')
             return
 
@@ -401,7 +404,7 @@ class Application(Frame):
                 os.remove(self.cpath)
             self.query.delete("1.0", END)
             self.txt.delete("1.0", END)
-            self.txt.insert("1.0", self.intro)
+            self.txt.insert("1.0", self.set_intro())
             self.txt.tag_add('all_text', '1.0', 'end-1c')
         self.query.focus_set()
 
@@ -420,8 +423,12 @@ class Application(Frame):
         with open(self.cpath, "w", encoding="utf-8") as f:
             json.dump(buf, f, ensure_ascii=False, indent=2)
 
+
     def on_view_file(self):
         ''' View the user saved queries file. '''
+        if not os.path.isfile(self.MyPath):
+            messagebox.showwarning(self.MyPath, "Empty - No File to view")
+            return
         self.txt.delete("1.0", END)
         with open(self.MyPath, "r") as fin:
             self.txt.insert("1.0", fin.read())
@@ -439,16 +446,17 @@ class Application(Frame):
         config = configparser.ConfigParser()
         config.read('gptgui.ini')
         self.MyTheme = config['Main']['theme']
-        self.MyPath = config['Main']['path']
+        self.MyPath  = config['Main']['path']
         self.MyFntQryF = config['Main']['fontqryfam']
         self.MyFntQryZ = config['Main']['fontqrysiz']
         self.MyFntGptF = config['Main']['fontgptfam']
         self.MyFntGptZ = config['Main']['fontgptsiz']
-        self.MyModel = config['Main']['engine']
-        self.MyKey = config['Main']['gptkey']
+        self.MyModel  = config['Main']['engine']
+        self.MyKey    = config['Main']['gptkey']
         self.MyEditor = config['Main']['editor']
-        self.MyFile = config['Main']['tempfile']
-        self.MyVoice = config['Main']['voice']
+        self.MyFile   = config['Main']['tempfile']
+        self.MyVoice  = config['Main']['voice']
+        self.MyColor  = config['Main']['color']
         self.MySystem = config['Main']['system']
         self.TOPFRAME = int(config['Main']['top_frame'])
         # if len(self.MyKey) < 16:
@@ -462,6 +470,11 @@ class Application(Frame):
         style = Style(theme=self.MyTheme)
         MyTitle = "GptGUI (OpenAI) " + self.MyModel
         root.title(MyTitle)
+        self.txt.delete("1.0", END)
+        self.txt.insert("1.0", self.set_intro())
+        self.txt.tag_configure('all_text', foreground=self.MyColor)
+        # use the following line to refresh the txt color when needed
+        self.txt.tag_add('all_text', '1.0', 'end-1c')  # exclude trailing newline
 
 
     def getmdtext(self):
